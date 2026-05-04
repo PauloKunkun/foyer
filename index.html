@@ -179,8 +179,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .idea-card-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:9px; }
 .idea-card-tag { font-size:10.5px; padding:1px 7px; border-radius:3px; background:rgba(0,0,0,.08); color:#444; font-weight:600; }
 .idea-card-date { font-size:10.5px; color:rgba(0,0,0,.3); margin-top:7px; font-weight:600; }
-.idea-card-del { position:absolute; top:10px; right:10px; border:none; background:rgba(0,0,0,.08); color:#444; width:20px; height:20px; border-radius:4px; cursor:pointer; font-size:10px; display:none; align-items:center; justify-content:center; }
-.idea-card:hover .idea-card-del { display:flex; }
+.idea-card-del { position:absolute; top:10px; right:10px; border:none; background:rgba(0,0,0,.1); color:#444; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; transition: background .1s; }
 .idea-card-del:hover { background:rgba(220,0,0,.15); color:#c00; }
 .ic-1 { background:#fffbeb; border-color:#fde68a; }
 .ic-2 { background:#eff6ff; border-color:#bfdbfe; }
@@ -710,7 +709,7 @@ async function addIdea() {
 }
 
 async function delIdea(id) {
-  await sbDel('ideas',id); bust('ideas'); await renderIdeas(); await updateHeader();
+  await sbDel('ideas', Number(id)); bust('ideas'); await renderIdeas(); await updateHeader();
 }
 
 async function renderIdeas() {
