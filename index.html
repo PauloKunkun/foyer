@@ -73,9 +73,6 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .cat-lbl { flex:1; }
 .cat-bdg { font-size:10px; font-weight:800; background:var(--acc); color:#fff; border-radius:10px; padding:1px 6px; flex-shrink:0; display:none; }
 .cat-bdg.show { display:block; }
-.del-cat { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:22px; height:22px; border:none; background:var(--white); color:var(--ink-4); cursor:pointer; border-radius:4px; font-size:11px; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .1s, background .1s, color .1s; }
-.cat-row:hover .del-cat, .cat-row:focus-within .del-cat { opacity:1; pointer-events:auto; color:var(--ink-3); }
-.del-cat:hover { background:#fee; color:#d00; }
 .sb-addcat { padding:0 10px; }
 .addcat-row { display:flex; gap:5px; align-items:center; }
 .addcat-inp { flex:1; border:1px solid var(--line); border-radius:var(--r); padding:5px 8px; font-size:12px; color:var(--ink); background:var(--paper); outline:none; min-width:0; }
@@ -91,7 +88,8 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .ph { padding:22px 26px 0; display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .ph-title { font-weight:800; font-size:22px; letter-spacing:-.03em; }
 .ph-title span { color:var(--acc); transition:color .25s; }
-.ph-sub { font-size:12px; color:var(--ink-3); margin-top:3px; }
+.ph-meta { display:flex; align-items:center; gap:8px; margin-top:3px; flex-wrap:wrap; }
+.ph-sub { font-size:12px; color:var(--ink-3); }
 .quick-search { width:min(280px,100%); border:1px solid var(--line); border-radius:var(--r); background:var(--white); color:var(--ink); padding:8px 11px; font-size:12.5px; outline:none; transition:border-color .15s, box-shadow .15s; }
 .quick-search:focus { border-color:var(--acc); box-shadow:0 0 0 3px var(--acc-bg); }
 .quick-search::placeholder { color:var(--ink-4); }
@@ -115,6 +113,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .fchip:hover { background:var(--line-2); color:var(--ink); }
 .fchip.active { background:var(--acc); color:#fff; }
 .sort-pick { border:1px solid var(--line); border-radius:var(--r); padding:5px 9px; font-size:12px; font-weight:600; color:var(--ink-2); background:var(--white); outline:none; cursor:pointer; }
+.cat-del-btn { display:none; border:1px solid #fecaca; background:#fff; color:#dc2626; border-radius:4px; padding:2px 7px; font-size:10.5px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; cursor:pointer; transition:background .12s, color .12s; }
+.cat-del-btn.show { display:inline-flex; align-items:center; }
+.cat-del-btn:hover { background:#fef2f2; color:#b91c1c; }
 
 /* ── ADD FORM ── */
 .add-zone { padding:14px 26px 0; }
@@ -325,14 +326,12 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .tc { flex-wrap:wrap; }
   .tc-actions { width:100%; justify-content:flex-end; }
   .tc-actions { opacity:1; }
-  .del-cat { position:static; transform:none; width:18px; height:18px; margin:0 4px 0 -4px; background:transparent; opacity:1; pointer-events:auto; }
   .item-del { opacity:1; pointer-events:auto; }
 }
 
 @media(hover:none){
   .sidebar .cat-row { display:inline-flex; align-items:center; position:static; flex:0 0 auto; width:auto; }
   .sidebar .cat-btn { width:auto; flex:0 0 auto; padding-right:8px; }
-  .sidebar .del-cat { position:static; transform:none; width:18px; height:18px; margin:0 4px 0 -4px; background:transparent; opacity:1; pointer-events:auto; }
   .item-del { opacity:1; pointer-events:auto; }
   .item-edit, .idea-card-actions, .tc-actions { opacity:1; }
 }
@@ -369,7 +368,10 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
       <div class="ph">
         <div>
           <div class="ph-title" id="phTitle">Wishlist <span id="phSpan"></span></div>
-          <div class="ph-sub" id="phSub"></div>
+          <div class="ph-meta">
+            <div class="ph-sub" id="phSub"></div>
+            <button class="cat-del-btn" id="catDelBtn" onclick="delCurrentCat()">Supprimer</button>
+          </div>
         </div>
         <input type="search" class="quick-search" id="searchInp" placeholder="Rechercher…" oninput="setSearch(this.value)">
         <div class="prio-legend" id="prioLeg">
@@ -560,8 +562,11 @@ async function getWishes() {
 async function getCats() {
   if (!C.cats) {
     const custom = await sbGet('categories', `person=eq.${person}&order=created_at.asc`);
-    const defs = JSON.parse(JSON.stringify(DEFAULT_CATS[person] || DEFAULT_CATS.paul));
-    C.cats = [...defs, ...(custom||[]).filter(c => !defs.find(d=>d.id===c.id))];
+    const hidden=hiddenCats();
+    const defs = JSON.parse(JSON.stringify(DEFAULT_CATS[person] || DEFAULT_CATS.paul))
+      .filter(c=>c.id==='all'||!hidden.includes(c.id))
+      .map(c=>({...c,custom:false}));
+    C.cats = [...defs, ...(custom||[]).filter(c => !defs.find(d=>d.id===c.id)).map(c=>({...c,custom:true}))];
   }
   return C.cats || [];
 }
@@ -588,6 +593,9 @@ const matchSearch = (...parts) => !search || parts.join(' ').toLowerCase().inclu
 const priceStore = () => JSON.parse(localStorage.getItem('fy_wish_prices')||'{}');
 const savePriceLocal = (id,price) => { const prices=priceStore(); price ? prices[id]=price : delete prices[id]; localStorage.setItem('fy_wish_prices',JSON.stringify(prices)); };
 const wishPrice = item => item.price || priceStore()[item.id] || '';
+const hiddenCatKey = () => `fy_hidden_cats_${person}`;
+const hiddenCats = () => JSON.parse(localStorage.getItem(hiddenCatKey())||'[]');
+const hideDefaultCat = id => localStorage.setItem(hiddenCatKey(),JSON.stringify([...new Set([...hiddenCats(),id])]));
 const svgChk  = `<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const svgChkSm= `<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const svgEdit = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M6.9 1.8l2.3 2.3M1.5 9.5l2.2-.5 5.6-5.6-1.7-1.7L2 7.3l-.5 2.2z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -671,6 +679,12 @@ function cancelAllEdits() {
   if(editingTaskId) cancelTaskEdit();
 }
 
+function updateCatDeleteButton(currentCat) {
+  const btn=document.getElementById('catDelBtn');
+  if(!btn) return;
+  btn.classList.toggle('show', section==='wishlist' && !!currentCat && currentCat.id!=='all');
+}
+
 /* ══════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════ */
@@ -686,7 +700,6 @@ async function renderSidebar() {
         <span class="cat-lbl">${esc(c.name)}</span>
         <span class="cat-bdg ${n?'show':''}">${n}</span>
       </button>
-      ${!c.builtin?`<button class="del-cat" title="Supprimer" onclick="delCat('${c.id}',event)">✕</button>`:''}
     </div>`;
   }).join('');
 }
@@ -695,15 +708,24 @@ async function addCat() {
   const name=document.getElementById('catInp').value.trim(); if(!name) return;
   const id='c'+Date.now();
   await sbPost('categories',{id,person,name,builtin:false});
-  bust('cats'); document.getElementById('catInp').value=''; await renderSidebar();
+  bust('cats'); cat=id; document.getElementById('catInp').value='';
+  await renderSidebar(); await renderWishlist(); await updateHeader();
+}
+
+async function delCurrentCat() {
+  await delCat(cat);
 }
 
 async function delCat(id,e) {
-  e.stopPropagation();
+  if(e) e.stopPropagation();
+  const cats=await getCats();
+  const current=cats.find(c=>c.id===id);
+  if(!current || current.id==='all') return;
   if(!confirm('Supprimer cette catégorie ?')) return;
   const wishes=await getWishes();
   await Promise.all(wishes.filter(i=>(i.catId||i.cat_id)===id).map(i=>sbPatch('wishes',i.id,{cat_id:null})));
-  await sbDel('categories',id);
+  if(current.custom) await sbDel('categories',id);
+  else hideDefaultCat(id);
   bust(); if(cat===id) cat='all';
   await renderSidebar(); await renderWishlist(); await updateHeader();
 }
@@ -717,10 +739,12 @@ async function updateHeader() {
   const p=PERSONS.find(x=>x.id===person);
   const titles={wishlist:'Wishlist',ideas:'Idées',tasks:'Tâches'};
   let pv=0, pl='', sub='';
+  let currentCat=null;
 
   if (section==='wishlist') {
     const [wishes,cats]=await Promise.all([getWishes(),getCats()]);
     const c=cats.find(x=>x.id===cat);
+    currentCat=c;
     const scope=cat==='all'?wishes:wishes.filter(i=>(i.catId||i.cat_id)===cat);
     const done=scope.filter(i=>i.done).length;
     pv=scope.length?(done/scope.length)*100:0; pl=`${done} / ${scope.length}`;
@@ -742,6 +766,7 @@ async function updateHeader() {
   document.getElementById('phTitle').firstChild.textContent=titles[section]+' ';
   document.getElementById('phSub').textContent=sub;
   document.getElementById('searchInp').placeholder=`Rechercher dans ${titles[section].toLowerCase()}…`;
+  updateCatDeleteButton(currentCat);
   document.getElementById('progFill').style.width=pv+'%';
   document.getElementById('progLbl').textContent=pl;
 }
