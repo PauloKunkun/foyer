@@ -283,11 +283,35 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .sec-tabs { order:2; width:100%; }
   .person-sw { order:1; margin-left:auto; border-left:none; padding-left:0; }
   .body-split { flex-direction:column; }
-  .sidebar { width:100%; height:auto; border-right:none; border-bottom:1px solid var(--line); flex-direction:row; flex-wrap:wrap; padding:10px; }
-  .sidebar .sb-sec { display:flex; flex-wrap:nowrap; gap:4px; padding:0; margin:0; overflow-x:auto; }
+
+  .sidebar {
+    width:100%;
+    height:auto;
+    border-right:none;
+    border-bottom:1px solid var(--line);
+    flex-direction:row;
+    flex-wrap:nowrap;       /* ← était wrap, empêche le retour à la ligne */
+    padding:8px 0;
+    overflow-x:auto;        /* ← scroll horizontal */
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;   /* masque la scrollbar sur Firefox */
+  }
+  .sidebar::-webkit-scrollbar { display:none; } /* masque sur Chrome/Safari */
+
+  .sidebar .sb-sec {
+    display:flex;
+    flex-wrap:nowrap;       /* ← les boutons restent sur une ligne */
+    gap:4px;
+    padding:0 12px;
+    margin:0;
+    overflow:visible;       /* le scroll est géré par .sidebar */
+    flex-shrink:0;          /* évite la compression */
+  }
   .sidebar .sb-ttl { display:none; }
   .cat-btn { white-space:nowrap; }
   .sb-addcat { display:none; }
+
   .ph,.add-zone,.items-wrap,.ideas-wrap,.tasks-wrap,.toolbar,.prog-row { padding-left:14px; padding-right:14px; }
   .quick-search { width:100%; }
   .item { flex-wrap:wrap; }
