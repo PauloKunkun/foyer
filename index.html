@@ -309,7 +309,11 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
     flex-shrink:0;          /* évite la compression */
   }
   .sidebar .sb-ttl { display:none; }
+  .sidebar .cat-row { display:flex; align-items:center; flex:0 0 auto; position:static; background:transparent; }
+  .sidebar .cat-row:hover { background:transparent; }
+  .sidebar .cat-btn { width:auto; flex:0 0 auto; gap:6px; padding:7px 9px; }
   .cat-btn { white-space:nowrap; }
+  .cat-lbl { flex:0 0 auto; }
   .sb-addcat { display:none; }
 
   .ph,.add-zone,.items-wrap,.ideas-wrap,.tasks-wrap,.toolbar,.prog-row { padding-left:14px; padding-right:14px; }
@@ -321,7 +325,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .tc { flex-wrap:wrap; }
   .tc-actions { width:100%; justify-content:flex-end; }
   .tc-actions { opacity:1; }
-  .del-cat { opacity:1; pointer-events:auto; }
+  .del-cat { position:static; transform:none; width:18px; height:18px; margin:0 4px 0 -4px; background:transparent; opacity:1; pointer-events:auto; }
   .item-del { opacity:1; pointer-events:auto; }
 }
 
