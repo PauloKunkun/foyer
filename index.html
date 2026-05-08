@@ -330,7 +330,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 }
 
 @media(hover:none){
-  .del-cat { opacity:1; pointer-events:auto; }
+  .sidebar .cat-row { display:inline-flex; align-items:center; position:static; flex:0 0 auto; width:auto; }
+  .sidebar .cat-btn { width:auto; flex:0 0 auto; padding-right:8px; }
+  .sidebar .del-cat { position:static; transform:none; width:18px; height:18px; margin:0 4px 0 -4px; background:transparent; opacity:1; pointer-events:auto; }
   .item-del { opacity:1; pointer-events:auto; }
   .item-edit, .idea-card-actions, .tc-actions { opacity:1; }
 }
