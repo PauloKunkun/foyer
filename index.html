@@ -121,6 +121,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .add-main input::placeholder { color:var(--ink-4); }
 .add-sub-btn { border:none; background:var(--acc); color:#fff; padding:0 18px; font-weight:700; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; align-self:stretch; border-left:1px solid var(--line); transition:opacity .15s, background .25s; white-space:nowrap; }
 .add-sub-btn:hover { opacity:.85; }
+.form-cancel { display:none; border:1px solid var(--line); background:var(--white); color:var(--ink-3); border-radius:4px; padding:6px 12px; font-weight:700; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; transition:background .12s, color .12s; white-space:nowrap; }
+.form-cancel.show { display:inline-flex; align-items:center; }
+.form-cancel:hover { background:var(--line-2); color:var(--ink); }
 .add-sub { display:flex; align-items:center; gap:9px; padding:0 15px 10px; border-top:1px solid var(--line-2); flex-wrap:wrap; }
 .add-sub input { border:none; outline:none; font-size:12px; color:var(--ink-2); background:transparent; padding:7px 0 0; min-width:60px; }
 .add-sub input::placeholder { color:var(--ink-4); }
@@ -152,8 +155,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .item-link:hover { text-decoration:underline; }
 .item-tag { font-size:10.5px; padding:1px 7px; border-radius:3px; background:var(--acc-bg); color:var(--acc); border:1px solid var(--acc-ln); flex-shrink:0; font-weight:600; }
 .item-date { font-size:11px; color:var(--ink-4); flex-shrink:0; font-weight:600; }
-.item-del { border:none; background:transparent; color:var(--ink-4); cursor:pointer; padding:3px 5px; border-radius:4px; opacity:0; transition:opacity .1s, background .1s, color .1s; flex-shrink:0; }
-.item:hover .item-del { opacity:1; }
+.item-act { border:none; background:transparent; color:var(--ink-4); cursor:pointer; padding:3px 5px; border-radius:4px; opacity:0; transition:opacity .1s, background .1s, color .1s; flex-shrink:0; }
+.item:hover .item-act { opacity:1; }
+.item-edit:hover { background:var(--acc-bg); color:var(--acc); }
 .item-del:hover { background:#fef2f2; color:#e53e3e; }
 
 /* ── IDEAS ── */
@@ -179,7 +183,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .idea-card-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:9px; }
 .idea-card-tag { font-size:10.5px; padding:1px 7px; border-radius:3px; background:rgba(0,0,0,.08); color:#444; font-weight:600; }
 .idea-card-date { font-size:10.5px; color:rgba(0,0,0,.3); margin-top:7px; font-weight:600; }
-.idea-card-del { position:absolute; top:10px; right:10px; border:none; background:rgba(0,0,0,.1); color:#444; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; transition: background .1s; }
+.idea-card-actions { position:absolute; top:10px; right:10px; display:flex; gap:4px; }
+.idea-card-act { border:none; background:rgba(0,0,0,.1); color:#444; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; transition: background .1s, color .1s; }
+.idea-card-edit:hover { background:rgba(0,0,0,.16); color:var(--acc); }
 .idea-card-del:hover { background:rgba(220,0,0,.15); color:#c00; }
 .ic-1 { background:#fffbeb; border-color:#fde68a; }
 .ic-2 { background:#eff6ff; border-color:#bfdbfe; }
@@ -197,8 +203,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .task-add input::placeholder { color:var(--ink-4); }
 .ta-sep { width:1px; height:20px; background:var(--line); flex-shrink:0; }
 .task-add select { border:none; outline:none; padding:0 12px; font-size:12px; font-weight:600; color:var(--ink-2); background:transparent; cursor:pointer; height:42px; flex-shrink:0; }
-.task-add button { border:none; background:var(--acc); color:#fff; padding:0 16px; font-weight:700; font-size:11px; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; height:42px; border-left:1px solid var(--line); white-space:nowrap; transition:opacity .15s; }
+.task-add button { border:none; background:var(--acc); color:#fff; padding:0 16px; font-weight:700; font-size:11px; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; height:42px; border-left:1px solid var(--line); white-space:nowrap; transition:opacity .15s, background .15s, color .15s; }
 .task-add button:hover { opacity:.85; }
+.task-add .form-cancel { height:42px; border-radius:0; border-top:none; border-bottom:none; border-right:none; padding:0 12px; background:var(--white); }
 .wk-prog-row { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
 .wk-prog-track { flex:1; height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
 .wk-prog-fill { height:100%; background:var(--acc); border-radius:2px; transition:width .4s ease, background .25s; }
@@ -232,8 +239,9 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .tc-body { flex:1; min-width:0; }
 .tc-name { font-size:12px; color:var(--ink); line-height:1.35; word-break:break-word; }
 .tc-who { font-size:10px; color:var(--ink-4); font-weight:600; margin-top:1px; }
-.tc-del { border:none; background:none; color:var(--ink-4); cursor:pointer; font-size:10px; padding:1px 3px; border-radius:3px; opacity:0; transition:opacity .1s, color .1s; flex-shrink:0; }
-.tc:hover .tc-del { opacity:1; }
+.tc-act { border:none; background:none; color:var(--ink-4); cursor:pointer; font-size:10px; padding:1px 3px; border-radius:3px; opacity:0; transition:opacity .1s, color .1s; flex-shrink:0; }
+.tc:hover .tc-act { opacity:1; }
+.tc-edit:hover { color:var(--acc); }
 .tc-del:hover { color:#d00; }
 .day-inp-row { padding:6px 8px 8px; }
 .day-inp { width:100%; border:1px dashed var(--line); border-radius:4px; padding:5px 8px; font-size:12px; color:var(--ink); background:transparent; outline:none; font-family:var(--ff); transition:border-color .15s, background .15s; }
@@ -331,7 +339,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
           <div class="add-form">
             <div class="add-main">
               <input type="text" id="wName" placeholder="Ajouter un souhait…" maxlength="140" autocomplete="off">
-              <button class="add-sub-btn" onclick="addWish()">Ajouter</button>
+              <button class="add-sub-btn" id="wSubmit" onclick="submitWish()">Ajouter</button>
             </div>
             <div class="add-sub">
               <input type="url"  id="wUrl"  placeholder="Lien…" style="flex:1;">
@@ -343,6 +351,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
                 <option value="mid" selected>Normal</option>
                 <option value="low">Basse</option>
               </select>
+              <button class="form-cancel" id="wCancel" onclick="cancelWishEdit()">Annuler</button>
             </div>
           </div>
         </div>
@@ -360,7 +369,8 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
               <div class="add-vsep" style="margin-top:0;height:18px;"></div>
               <div class="color-row" id="colorRow"></div>
               <div class="add-vsep" style="margin-top:0;height:18px;"></div>
-              <button class="add-sub-btn" style="border-radius:4px;padding:6px 16px;" onclick="addIdea()">Ajouter</button>
+              <button class="add-sub-btn" id="ideaSubmit" style="border-radius:4px;padding:6px 16px;" onclick="submitIdea()">Ajouter</button>
+              <button class="form-cancel" id="ideaCancel" onclick="cancelIdeaEdit()">Annuler</button>
             </div>
           </div>
           <div class="ideas-grid" id="ideaGrid"></div>
@@ -380,7 +390,8 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
               <option value="paul">Paul</option>
               <option value="alexia">Alexia</option>
             </select>
-            <button onclick="addTask()">Planifier</button>
+            <button id="taskSubmit" onclick="submitTask()">Planifier</button>
+            <button class="form-cancel" id="taskCancel" onclick="cancelTaskEdit()">Annuler</button>
           </div>
           <div class="wk-prog-row">
             <div class="wk-prog-track"><div class="wk-prog-fill" id="wkFill" style="width:0%"></div></div>
@@ -438,6 +449,9 @@ let cat      = 'all';
 let filter   = 'all';
 let color    = 'ic-1';
 let wkOffset = 0;
+let editingWishId = null;
+let editingIdeaId = null;
+let editingTaskId = null;
 
 // In-memory cache
 let C = { wishes:null, cats:null, ideas:null, tasks:null };
@@ -506,6 +520,7 @@ const dateKey = d => { const x=new Date(d); x.setHours(0,0,0,0); return x.toISOS
 const monday  = (off=0) => { const d=new Date(),day=d.getDay()||7; d.setDate(d.getDate()-day+1+off*7); d.setHours(0,0,0,0); return d; };
 const svgChk  = `<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const svgChkSm= `<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const svgEdit = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M6.9 1.8l2.3 2.3M1.5 9.5l2.2-.5 5.6-5.6-1.7-1.7L2 7.3l-.5 2.2z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const svgX    = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const loader  = show => document.getElementById('loader').classList.toggle('hidden', !show);
 
@@ -647,6 +662,45 @@ async function addWish() {
   document.getElementById('wName').focus();
 }
 
+async function submitWish() {
+  editingWishId ? await saveWishEdit() : await addWish();
+}
+
+function cancelWishEdit() {
+  editingWishId=null;
+  ['wName','wUrl','wNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('wPrio').value='mid';
+  document.getElementById('wSubmit').textContent='Ajouter';
+  document.getElementById('wCancel').classList.remove('show');
+  document.getElementById('wName').placeholder='Ajouter un souhait…';
+}
+
+async function editWish(id) {
+  const wishes=await getWishes(); const item=wishes.find(i=>i.id===id); if(!item) return;
+  editingWishId=id;
+  document.getElementById('wName').value=item.name||'';
+  document.getElementById('wUrl').value=item.url||'';
+  document.getElementById('wNote').value=item.note||'';
+  document.getElementById('wPrio').value=item.priority||'mid';
+  document.getElementById('wSubmit').textContent='Enregistrer';
+  document.getElementById('wCancel').classList.add('show');
+  document.getElementById('wName').placeholder='Modifier le souhait…';
+  document.getElementById('wName').focus();
+}
+
+async function saveWishEdit() {
+  const name=document.getElementById('wName').value.trim(); if(!name){document.getElementById('wName').focus();return;}
+  await sbPatch('wishes',editingWishId,{
+    name,
+    url:document.getElementById('wUrl').value.trim()||null,
+    note:document.getElementById('wNote').value.trim()||null,
+    priority:document.getElementById('wPrio').value
+  });
+  cancelWishEdit(); bust('wishes');
+  await renderSidebar(); await renderWishlist(); await updateHeader();
+  document.getElementById('wName').focus();
+}
+
 async function toggleWish(id) {
   const wishes=await getWishes(); const item=wishes.find(i=>i.id===id); if(!item) return;
   const done=!item.done; const done_at=done?fmt(Date.now()):null;
@@ -689,11 +743,12 @@ async function renderWishlist() {
           <span class="item-date">${item.done&&item.done_at?'Obtenu le '+item.done_at:item.date}</span>
         </div>
       </div>
-      <button class="item-del" onclick="delWish(${item.id})">${svgX}</button>
+      <button class="item-act item-edit" title="Modifier" onclick="editWish(${item.id})">${svgEdit}</button>
+      <button class="item-act item-del" title="Supprimer" onclick="delWish(${item.id})">${svgX}</button>
     </div>`).join('');
 }
 
-document.getElementById('wName').addEventListener('keydown',e=>{if(e.key==='Enter')addWish();});
+document.getElementById('wName').addEventListener('keydown',e=>{if(e.key==='Enter')submitWish();});
 
 /* ══════════════════════════════════════
    IDÉES
@@ -708,6 +763,51 @@ async function addIdea() {
   document.getElementById('ideaTi').focus();
 }
 
+async function submitIdea() {
+  editingIdeaId ? await saveIdeaEdit() : await addIdea();
+}
+
+function setIdeaColor(id) {
+  color=id||'ic-1';
+  document.querySelectorAll('.cswatch').forEach(c=>c.classList.toggle('sel',c.classList.contains(color)));
+}
+
+function cancelIdeaEdit() {
+  editingIdeaId=null;
+  ['ideaTi','ideaBo','ideaTags'].forEach(id=>document.getElementById(id).value='');
+  setIdeaColor('ic-1');
+  document.getElementById('ideaSubmit').textContent='Ajouter';
+  document.getElementById('ideaCancel').classList.remove('show');
+  document.getElementById('ideaTi').placeholder="Titre de l'idée…";
+}
+
+async function editIdea(id) {
+  const ideas=await getIdeas(); const idea=ideas.find(i=>i.id===id); if(!idea) return;
+  editingIdeaId=id;
+  document.getElementById('ideaTi').value=idea.title||'';
+  document.getElementById('ideaBo').value=idea.body||'';
+  document.getElementById('ideaTags').value=(idea.tags||[]).join(', ');
+  setIdeaColor(idea.color||'ic-1');
+  document.getElementById('ideaSubmit').textContent='Enregistrer';
+  document.getElementById('ideaCancel').classList.add('show');
+  document.getElementById('ideaTi').placeholder="Modifier l'idée…";
+  document.getElementById('ideaTi').focus();
+}
+
+async function saveIdeaEdit() {
+  const title=document.getElementById('ideaTi').value.trim(); if(!title){document.getElementById('ideaTi').focus();return;}
+  const tags=document.getElementById('ideaTags').value.trim().split(',').map(t=>t.trim()).filter(Boolean);
+  await sbPatch('ideas',editingIdeaId,{
+    title,
+    body:document.getElementById('ideaBo').value.trim()||null,
+    tags,
+    color
+  });
+  cancelIdeaEdit(); bust('ideas');
+  await renderIdeas(); await updateHeader();
+  document.getElementById('ideaTi').focus();
+}
+
 async function delIdea(id) {
   await sbDel('ideas', Number(id)); bust('ideas'); await renderIdeas(); await updateHeader();
 }
@@ -718,7 +818,10 @@ async function renderIdeas() {
   if(!ideas.length){el.innerHTML=`<div class="empty"><div class="empty-line"></div><div class="empty-txt">Aucune idée — ajoutez-en une</div></div>`;return;}
   el.innerHTML=ideas.map(idea=>`
     <div class="idea-card ${idea.color||'ic-1'}">
-      <button class="idea-card-del" onclick="delIdea(${idea.id})">${svgX}</button>
+      <div class="idea-card-actions">
+        <button class="idea-card-act idea-card-edit" title="Modifier" onclick="editIdea(${idea.id})">${svgEdit}</button>
+        <button class="idea-card-act idea-card-del" title="Supprimer" onclick="delIdea(${idea.id})">${svgX}</button>
+      </div>
       <div class="idea-card-ttl">${esc(idea.title)}</div>
       ${idea.body?`<div class="idea-card-body">${esc(idea.body)}</div>`:''}
       ${idea.tags?.length?`<div class="idea-card-tags">${idea.tags.map(t=>`<span class="idea-card-tag">${esc(t)}</span>`).join('')}</div>`:''}
@@ -726,7 +829,7 @@ async function renderIdeas() {
     </div>`).join('');
 }
 
-document.getElementById('ideaTi').addEventListener('keydown',e=>{if(e.key==='Enter')addIdea();});
+document.getElementById('ideaTi').addEventListener('keydown',e=>{if(e.key==='Enter')submitIdea();});
 
 /* ══════════════════════════════════════
    TÂCHES
@@ -745,6 +848,44 @@ async function addTask() {
   await sbPost('tasks',row);
   bust('tasks'); document.getElementById('tqName').value='';
   await renderTasks(); document.getElementById('tqName').focus();
+}
+
+async function submitTask() {
+  editingTaskId ? await saveTaskEdit() : await addTask();
+}
+
+function cancelTaskEdit() {
+  editingTaskId=null;
+  document.getElementById('tqName').value='';
+  document.getElementById('tqWho').value='';
+  document.getElementById('taskSubmit').textContent='Planifier';
+  document.getElementById('taskCancel').classList.remove('show');
+  document.getElementById('tqName').placeholder='Nouvelle tâche…';
+  fillDaySel();
+}
+
+async function editTask(id) {
+  const tasks=await getTasks(); const item=tasks.find(t=>t.id===id); if(!item) return;
+  editingTaskId=id;
+  document.getElementById('tqName').value=item.name||'';
+  document.getElementById('tqDay').value=item.day||todayK();
+  document.getElementById('tqWho').value=item.who||'';
+  document.getElementById('taskSubmit').textContent='Enregistrer';
+  document.getElementById('taskCancel').classList.add('show');
+  document.getElementById('tqName').placeholder='Modifier la tâche…';
+  document.getElementById('tqName').focus();
+}
+
+async function saveTaskEdit() {
+  const name=document.getElementById('tqName').value.trim(); if(!name){document.getElementById('tqName').focus();return;}
+  await sbPatch('tasks',editingTaskId,{
+    name,
+    day:document.getElementById('tqDay').value,
+    who:document.getElementById('tqWho').value
+  });
+  cancelTaskEdit(); bust('tasks');
+  await renderTasks(); await updateHeader();
+  document.getElementById('tqName').focus();
 }
 
 async function addTaskDay(dayK) {
@@ -798,7 +939,8 @@ async function renderTasks() {
               <div class="tc-name">${esc(x.name)}</div>
               ${x.who?`<div class="tc-who">${WHO_L[x.who]||''}</div>`:''}
             </div>
-            <button class="tc-del" onclick="delTask(${x.id})">✕</button>
+            <button class="tc-act tc-edit" title="Modifier" onclick="editTask(${x.id})">${svgEdit}</button>
+            <button class="tc-act tc-del" title="Supprimer" onclick="delTask(${x.id})">✕</button>
           </div>`).join(''):`<div style="padding:6px 4px;font-size:11.5px;color:var(--ink-4);font-weight:600;">Rien</div>`}
       </div>
       <div class="day-inp-row">
@@ -811,7 +953,7 @@ async function renderTasks() {
   await updateHeader();
 }
 
-document.getElementById('tqName').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+document.getElementById('tqName').addEventListener('keydown',e=>{if(e.key==='Enter')submitTask();});
 
 /* ══════════════════════════════════════
    RENDER ALL
