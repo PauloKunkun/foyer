@@ -26,6 +26,7 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; }
 body.u-paul   { --acc:#2040d0; --acc-bg:#eef1fc; --acc-ln:#c4cef8; }
 body.u-alexia { --acc:#c0186e; --acc-bg:#fceef5; --acc-ln:#f4b8d4; }
 body.u-duo    { --acc:#9b5c00; --acc-bg:#fdf4e7; --acc-ln:#f5d49a; }
+body.s-neutral { --acc:#1a7a4a; --acc-bg:#eaf6f0; --acc-ln:#a8dfc4; }
 
 html, body { height: 100%; }
 body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(--ink); background: var(--paper); transition: background .25s; }
@@ -209,16 +210,21 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 
 /* ── TASKS ── */
 .tasks-wrap { padding:16px 26px 40px; }
-.task-add { background:var(--white); border:1px solid var(--line); border-radius:var(--r); display:flex; align-items:center; margin-bottom:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.04); transition:border-color .15s, box-shadow .15s; }
+.task-add { background:var(--white); border:1px solid var(--line); border-radius:var(--r); display:flex; flex-direction:column; margin-bottom:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.04); transition:border-color .15s, box-shadow .15s; }
 .task-add:focus-within { border-color:var(--acc); box-shadow:0 0 0 3px var(--acc-bg); }
-.task-add input { flex:1; border:none; outline:none; padding:11px 14px; font-size:13.5px; color:var(--ink); background:transparent; min-width:0; }
-.task-add input::placeholder { color:var(--ink-4); }
+.task-add-row1 { display:flex; align-items:center; }
+.task-add-row2 { display:flex; align-items:center; border-top:1px solid var(--line-2); background:var(--paper); flex-wrap:wrap; }
+.task-add input[type="text"] { flex:1; border:none; outline:none; padding:13px 15px; font-size:14px; color:var(--ink); background:transparent; min-width:0; }
+.task-add input[type="text"]::placeholder { color:var(--ink-4); }
 .ta-sep { width:1px; height:20px; background:var(--line); flex-shrink:0; }
-.task-add select { border:none; outline:none; padding:0 12px; font-size:12px; font-weight:600; color:var(--ink-2); background:transparent; cursor:pointer; height:42px; flex-shrink:0; }
-.task-add input[type="date"] { flex:0 0 132px; height:42px; padding:0 10px; font-size:12px; font-weight:600; color:var(--ink-2); border:none; border-left:1px solid var(--line); cursor:pointer; }
-.task-add button { border:none; background:var(--acc); color:#fff; padding:0 16px; font-weight:700; font-size:11px; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; height:42px; border-left:1px solid var(--line); white-space:nowrap; transition:opacity .15s, background .15s, color .15s; }
+.task-add select { border:none; outline:none; padding:0 12px; font-size:12px; font-weight:600; color:var(--ink-2); background:transparent; cursor:pointer; height:38px; flex-shrink:0; border-right:1px solid var(--line-2); }
+.task-add input[type="date"] { flex:0 0 auto; height:38px; padding:0 10px; font-size:12px; font-weight:600; color:var(--ink-2); border:none; border-right:1px solid var(--line-2); cursor:pointer; background:transparent; outline:none; }
+.task-add-until { display:none; align-items:center; }
+.task-add-until.show { display:flex; }
+.task-add-until-lbl { font-size:11px; font-weight:700; color:var(--ink-3); padding:0 4px 0 10px; white-space:nowrap; }
+.task-add button { border:none; background:var(--acc); color:#fff; padding:0 18px; font-weight:700; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; height:46px; white-space:nowrap; transition:opacity .15s, background .25s; flex-shrink:0; }
 .task-add button:hover { opacity:.85; }
-.task-add .form-cancel { height:42px; border-radius:0; border-top:none; border-bottom:none; border-right:none; padding:0 12px; background:var(--white); }
+.task-add .form-cancel { border:none; background:transparent; color:var(--ink-3); padding:0 14px; font-weight:700; font-size:11.5px; cursor:pointer; height:46px; border-left:1px solid var(--line-2); transition:background .12s, color .12s; }
 .task-tools { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
 .task-filters { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .task-strip { display:flex; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--white); }
@@ -348,70 +354,67 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .item-edit { opacity:1; color:var(--acc); background:var(--acc-bg); border-color:var(--acc-ln); }
   .idea-card-actions { opacity:1; }
   .item-del { opacity:1; pointer-events:auto; }
-  .task-add { display:grid; grid-template-columns:1fr 1fr; align-items:stretch; }
+  .task-add { display:flex; flex-direction:column; }
   .task-add .ta-sep { display:none; }
-  .task-add input,
-  .task-add select,
-  .task-add input[type="date"],
-  .task-add button,
-  .task-add .form-cancel {
-    width:100%;
-    min-width:0;
-    height:42px;
-    border:0;
-    border-radius:0;
-    border-bottom:1px solid var(--line-2);
-    border-left:0;
-  }
-  .task-add #tqName { grid-column:1 / -1; font-size:15px; padding:12px 14px; }
-  .task-add #tqDay,
-  .task-add #tqWho,
-  .task-add #tqRepeat,
-  .task-add #tqUntil { padding:0 10px; background:var(--white); }
-  .task-add #taskSubmit { grid-column:1 / -1; border-bottom:0; font-size:12px; }
-  .task-add .form-cancel.show { display:flex; justify-content:center; }
+  .task-add-row1 { display:flex; align-items:stretch; }
+  .task-add-row2 { display:flex; flex-wrap:wrap; gap:0; }
+  .task-add input[type="text"] { font-size:15px; padding:13px 14px; }
+  .task-add-row2 input[type="date"],
+  .task-add-row2 select { height:40px; font-size:12.5px; flex:1 1 auto; border-right:1px solid var(--line-2); border-bottom:0; }
+  .task-add-until.show { flex:1 1 100%; border-top:1px solid var(--line-2); }
+  .task-add-until-lbl { font-size:12px; padding:0 8px; }
+  .task-add-until input[type="date"] { border:none; flex:1; }
+  .task-add #taskSubmit { height:44px; font-size:12.5px; }
+  .task-add .form-cancel.show { display:flex; align-items:center; height:44px; }
   .task-tools { display:flex; flex-direction:column; align-items:stretch; gap:8px; margin-bottom:12px; }
   .task-filters { display:flex; flex-direction:column; align-items:stretch; gap:8px; }
   .task-strip { width:100%; display:grid; grid-auto-flow:column; grid-auto-columns:1fr; }
-  .task-chip { padding:9px 6px; font-size:11px; text-align:center; }
+  .task-chip { padding:10px 6px; font-size:12px; font-weight:700; text-align:center; }
   .task-filter-select,
-  .task-action { width:100%; min-height:38px; text-align:center; }
-  .task-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .task-stat { padding:9px 10px; }
-  .task-stat-k { white-space:normal; line-height:1.2; }
+  .task-action { width:100%; min-height:42px; text-align:center; }
+  .task-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .task-stat { padding:11px 13px; }
+  .task-stat-k { white-space:normal; line-height:1.3; font-size:9.5px; }
+  .task-stat-v { font-size:22px; margin-top:3px; }
   .task-overdue-head { align-items:stretch; flex-direction:column; }
   .task-overdue-list { grid-template-columns:1fr; }
   .wk-prog-row { gap:8px; margin-bottom:12px; }
-  .wk-prog-lbl { font-size:10.5px; }
+  .wk-prog-lbl { font-size:11px; }
   .wk-head { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; }
   .wk-title { grid-column:1 / -1; width:100%; margin:0; font-size:13px; text-align:center; }
-  .wk-btn { padding:8px 6px; font-size:10.5px; min-width:0; }
-  .day-grid { gap:10px; }
+  .wk-btn { padding:10px 6px; font-size:11px; min-width:0; }
+  .day-grid { gap:12px; }
   .day-col { min-height:0; }
-  .day-hd { align-items:center; padding:10px 12px; }
+  .day-hd { align-items:center; padding:11px 13px; }
   .day-num { font-size:22px; }
-  .day-tasks { padding:9px 9px 0; }
-  .tc { display:grid; grid-template-columns:18px minmax(0,1fr); gap:8px; padding:10px; }
-  .tcb { width:18px; height:18px; margin-top:1px; }
-  .tc-name { font-size:13.5px; line-height:1.35; }
-  .tc-who,.tc-date { font-size:11px; }
-  .tc-repeat { max-width:100%; white-space:normal; }
-  .tc-actions { grid-column:1 / -1; width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(78px,1fr)); gap:6px; opacity:1; }
-  .tc-act { min-height:30px; padding:5px 7px; border:1px solid var(--line); background:var(--white); color:var(--ink-2); font-size:10.5px; font-weight:800; text-align:center; }
+  .day-tasks { padding:10px 10px 0; gap:7px; }
+  .tc { display:grid; grid-template-columns:20px minmax(0,1fr); gap:10px; padding:12px 11px; }
+  .tcb { width:20px; height:20px; margin-top:1px; border-radius:4px; }
+  .tc-name { font-size:13.5px; line-height:1.4; }
+  .tc-who,.tc-date { font-size:11.5px; margin-top:2px; }
+  .tc-repeat { max-width:100%; white-space:normal; margin-top:5px; }
+  .tc-actions { grid-column:1 / -1; width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(80px,1fr)); gap:7px; opacity:1; margin-top:4px; }
+  .tc-act { min-height:34px; padding:7px 8px; border:1px solid var(--line); background:var(--white); color:var(--ink-2); font-size:11px; font-weight:700; text-align:center; border-radius:5px; }
   .tc-edit { justify-content:center; }
-  .day-inp-row { padding:8px 9px 10px; }
-  .day-inp { min-height:36px; font-size:13px; background:var(--paper); }
+  .day-inp-row { padding:9px 10px 11px; }
+  .day-inp { min-height:38px; font-size:13.5px; background:var(--paper); padding:8px 10px; }
 }
 
 @media(max-width:420px){
   .tasks-wrap { padding-top:12px; }
-  .task-add { grid-template-columns:1fr; }
-  .task-add #taskSubmit { grid-column:1; }
+  .task-add-row2 { flex-direction:column; }
+  .task-add-row2 input[type="date"],
+  .task-add-row2 select { width:100%; border-right:none; border-bottom:1px solid var(--line-2); }
   .task-strip { grid-auto-flow:row; grid-auto-rows:1fr; }
   .task-chip+.task-chip { border-left:0; border-top:1px solid var(--line); }
-  .task-stats { gap:6px; }
-  .task-stat-v { font-size:17px; }
+  .task-chip { padding:11px 8px; font-size:12.5px; }
+  .task-stats { gap:8px; }
+  .task-stat-v { font-size:20px; }
+  .task-stat-k { font-size:9.5px; }
   .wk-head { grid-template-columns:1fr; }
+  .tc { padding:13px 12px; gap:11px; }
+  .tc-name { font-size:14px; }
+  .tc-act { min-height:36px; font-size:11.5px; }
 }
 
 @media(hover:none){
@@ -532,25 +535,31 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
       <div class="section" id="sec-tasks">
         <div class="tasks-wrap">
           <div class="task-add" id="taskForm">
-            <input type="text" id="tqName" placeholder="Nouvelle tâche…" maxlength="100" autocomplete="off">
-            <div class="ta-sep"></div>
-            <select id="tqDay"></select>
-            <div class="ta-sep"></div>
-            <select id="tqWho">
-              <option value="">Tout le monde</option>
-              <option value="paul">Paul</option>
-              <option value="alexia">Alexia</option>
-            </select>
-            <div class="ta-sep"></div>
-            <select id="tqRepeat" title="Récurrence">
-              <option value="">Une fois</option>
-              <option value="daily">Tous les jours</option>
-              <option value="weekly">Chaque semaine</option>
-              <option value="monthly">Chaque mois</option>
-            </select>
-            <input type="date" id="tqUntil" title="Fin de récurrence. Laisser vide pour sans fin.">
-            <button id="taskSubmit" onclick="submitTask()">Planifier</button>
-            <button class="form-cancel" id="taskCancel" onclick="cancelTaskEdit()">Annuler</button>
+            <div class="task-add-row1">
+              <input type="text" id="tqName" placeholder="Nouvelle tâche…" maxlength="100" autocomplete="off">
+              <button id="taskSubmit" onclick="submitTask()">Planifier</button>
+              <button class="form-cancel" id="taskCancel" onclick="cancelTaskEdit()">Annuler</button>
+            </div>
+            <div class="task-add-row2">
+              <input type="date" id="tqDay">
+              <select id="tqWho">
+                <option value="">Tout le monde</option>
+                <option value="paul">Paul</option>
+                <option value="alexia">Alexia</option>
+              </select>
+              <select id="tqRepeat" title="Récurrence" onchange="toggleUntil(this.value)">
+                <option value="">Une fois</option>
+                <option value="daily">Tous les jours</option>
+                <option value="biweekly">Toutes les 2 semaines</option>
+                <option value="weekly">Chaque semaine</option>
+                <option value="monthly">Chaque mois</option>
+                <option value="annually">Chaque année</option>
+              </select>
+              <div class="task-add-until" id="tqUntilWrap">
+                <span class="task-add-until-lbl">jusqu'au</span>
+                <input type="date" id="tqUntil" title="Fin de récurrence">
+              </div>
+            </div>
           </div>
           <div class="task-tools">
             <div class="task-filters">
@@ -566,7 +575,6 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
               </div>
               <select class="task-filter-select" id="taskWhoFilter" onchange="setTaskWhoFilter(this.value)">
                 <option value="all">Tous</option>
-                <option value="">Sans personne</option>
                 <option value="paul">Paul</option>
                 <option value="alexia">Alexia</option>
               </select>
@@ -726,14 +734,18 @@ const loader  = show => document.getElementById('loader').classList.toggle('hidd
    THEME
 ══════════════════════════════════════ */
 function applyTheme() {
-  document.body.className = (PERSONS.find(p=>p.id===person)||{cls:'u-paul'}).cls;
+  const cls = (PERSONS.find(p=>p.id===person)||{cls:'u-paul'}).cls;
+  document.body.className = cls + (section !== 'wishlist' ? ' s-neutral' : '');
 }
 
 /* ══════════════════════════════════════
    PERSON SWITCHER
 ══════════════════════════════════════ */
 function renderPersonSw() {
-  document.getElementById('personSw').innerHTML = PERSONS.map(p =>
+  const visible = section === 'wishlist';
+  const sw = document.getElementById('personSw');
+  sw.style.display = visible ? '' : 'none';
+  sw.innerHTML = PERSONS.map(p =>
     `<button class="pbtn ${person===p.id?'active':''}" onclick="switchPerson('${p.id}')">
       <div class="pmark ${p.id}"></div>${esc(p.name)}
     </button>`).join('');
@@ -760,6 +772,8 @@ async function setSection(el) {
   document.getElementById('sec-'+section).classList.add('active');
   const isWish = section==='wishlist';
   document.getElementById('sidebar').classList.toggle('hidden', !isWish);
+  applyTheme();
+  renderPersonSw();
   document.getElementById('prioLeg').style.display = isWish ? '' : 'none';
   document.getElementById('addCatZone').style.display = isWish ? '' : 'none';
   await renderAll();
@@ -1127,8 +1141,10 @@ function seriesDates(rule, fromK, toK) {
   while(cur<=to && guard<900) {
     if(cur>=from) out.push(dateKey(cur));
     if(rule.repeat==='daily') cur.setDate(cur.getDate()+1);
+    else if(rule.repeat==='biweekly') cur.setDate(cur.getDate()+14);
     else if(rule.repeat==='weekly') cur.setDate(cur.getDate()+7);
     else if(rule.repeat==='monthly') cur=addMonthsSafe(cur,1);
+    else if(rule.repeat==='annually') cur=addMonthsSafe(cur,12);
     else break;
     guard++;
   }
@@ -1157,15 +1173,18 @@ async function ensureRecurringForWindow(fromK, toK, existingTasks=null) {
   for(const rule of series) await createSeriesOccurrences(rule, fromK, toK, existingTasks);
 }
 function repeatLabel(repeat) {
-  return repeat==='daily'?'Quotidien':repeat==='weekly'?'Hebdo':repeat==='monthly'?'Mensuel':'Récurrent';
+  return repeat==='daily'?'Quotidien':repeat==='biweekly'?'/ 2 sem.':repeat==='weekly'?'Hebdo':repeat==='monthly'?'Mensuel':repeat==='annually'?'Annuel':'Récurrent';
 }
 
-function fillDaySel() {
-  const m=monday(wkOffset); const t=todayK();
-  document.getElementById('tqDay').innerHTML=Array.from({length:7},(_,i)=>{
-    const d=new Date(m); d.setDate(d.getDate()+i); const dk=dateKey(d);
-    return `<option value="${dk}" ${dk===t?'selected':''}>${DAY_S[i]} ${d.getDate()}</option>`;
-  }).join('');
+function fillDayDate(val) {
+  const inp=document.getElementById('tqDay');
+  inp.value = val || todayK();
+}
+
+function toggleUntil(repeat) {
+  const wrap=document.getElementById('tqUntilWrap');
+  wrap.classList.toggle('show', !!repeat);
+  if(!repeat) document.getElementById('tqUntil').value='';
 }
 
 async function addTask() {
@@ -1188,6 +1207,8 @@ async function addTask() {
   bust('tasks'); document.getElementById('tqName').value='';
   document.getElementById('tqRepeat').value='';
   document.getElementById('tqUntil').value='';
+  toggleUntil('');
+  fillDayDate();
   await renderTasks(); document.getElementById('tqName').focus();
 }
 
@@ -1200,14 +1221,15 @@ function cancelTaskEdit() {
   document.getElementById('tqName').value='';
   document.getElementById('tqWho').value='';
   document.getElementById('tqRepeat').value='';
-  document.getElementById('tqUntil').value='';
   document.getElementById('tqRepeat').disabled=false;
+  document.getElementById('tqUntil').value='';
   document.getElementById('tqUntil').disabled=false;
+  toggleUntil('');
   document.getElementById('taskSubmit').textContent='Planifier';
   document.getElementById('taskCancel').classList.remove('show');
   document.getElementById('tqName').placeholder='Nouvelle tâche…';
   markEditing('taskForm', false);
-  fillDaySel();
+  fillDayDate();
 }
 
 async function editTask(id) {
@@ -1217,9 +1239,10 @@ async function editTask(id) {
   document.getElementById('tqDay').value=item.day||todayK();
   document.getElementById('tqWho').value=item.who||'';
   document.getElementById('tqRepeat').value='';
-  document.getElementById('tqUntil').value='';
   document.getElementById('tqRepeat').disabled=true;
+  document.getElementById('tqUntil').value='';
   document.getElementById('tqUntil').disabled=true;
+  toggleUntil('');
   document.getElementById('taskSubmit').textContent='Enregistrer';
   document.getElementById('taskCancel').classList.add('show');
   document.getElementById('tqName').placeholder='Modifier la tâche…';
@@ -1314,7 +1337,7 @@ function shiftWeek(n) { wkOffset+=n; renderTasks(); }
 function goToday()    { wkOffset=0;  renderTasks(); }
 
 async function renderTasks() {
-  fillDaySel();
+  fillDayDate();
   let tasks=await getTasks();
   const m=monday(wkOffset); const t=todayK();
   const days=Array.from({length:7},(_,i)=>{const d=new Date(m);d.setDate(d.getDate()+i);return{key:dateKey(d),d:new Date(d),i};});
@@ -1429,4 +1452,3 @@ renderAll().then(()=>loader(false));
 </script>
 </body>
 </html>
-²
