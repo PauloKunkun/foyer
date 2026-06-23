@@ -209,7 +209,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 
 /* ── TASKS ── */
 .tasks-wrap { padding:16px 26px 40px; }
-.task-add { background:var(--white); border:1px solid var(--line); border-radius:var(--r); display:flex; align-items:center; margin-bottom:14px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.04); transition:border-color .15s, box-shadow .15s; }
+.task-add { background:var(--white); border:1px solid var(--line); border-radius:var(--r); display:flex; align-items:center; margin-bottom:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.04); transition:border-color .15s, box-shadow .15s; }
 .task-add:focus-within { border-color:var(--acc); box-shadow:0 0 0 3px var(--acc-bg); }
 .task-add input { flex:1; border:none; outline:none; padding:11px 14px; font-size:13.5px; color:var(--ink); background:transparent; min-width:0; }
 .task-add input::placeholder { color:var(--ink-4); }
@@ -218,6 +218,27 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .task-add button { border:none; background:var(--acc); color:#fff; padding:0 16px; font-weight:700; font-size:11px; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; height:42px; border-left:1px solid var(--line); white-space:nowrap; transition:opacity .15s, background .15s, color .15s; }
 .task-add button:hover { opacity:.85; }
 .task-add .form-cancel { height:42px; border-radius:0; border-top:none; border-bottom:none; border-right:none; padding:0 12px; background:var(--white); }
+.task-tools { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.task-filters { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.task-strip { display:flex; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--white); }
+.task-chip { border:none; background:transparent; color:var(--ink-3); padding:6px 11px; font-size:11.5px; font-weight:700; letter-spacing:.02em; cursor:pointer; white-space:nowrap; transition:background .12s, color .12s; }
+.task-chip+.task-chip { border-left:1px solid var(--line); }
+.task-chip:hover { background:var(--line-2); color:var(--ink); }
+.task-chip.active { background:var(--acc); color:#fff; }
+.task-filter-select { border:1px solid var(--line); border-radius:var(--r); background:var(--white); color:var(--ink-2); padding:6px 9px; font-size:11.5px; font-weight:700; outline:none; cursor:pointer; }
+.task-action { border:1px solid var(--acc-ln); background:var(--acc-bg); color:var(--acc); border-radius:var(--r); padding:6px 10px; font-size:11.5px; font-weight:800; letter-spacing:.02em; cursor:pointer; white-space:nowrap; transition:opacity .12s, background .12s; }
+.task-action:hover { opacity:.82; }
+.task-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
+.task-stat { background:var(--white); border:1px solid var(--line); border-radius:var(--r); padding:10px 12px; min-width:0; }
+.task-stat-k { font-size:9.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.task-stat-v { margin-top:2px; font-size:19px; line-height:1; font-weight:800; letter-spacing:-.03em; color:var(--ink); }
+.task-stat.warn .task-stat-v { color:#d97706; }
+.task-stat.hot .task-stat-v { color:#dc2626; }
+.task-overdue { display:none; margin-bottom:14px; background:#fff7ed; border:1px solid #fed7aa; border-radius:var(--r); overflow:hidden; }
+.task-overdue.show { display:block; }
+.task-overdue-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 11px; border-bottom:1px solid #fed7aa; }
+.task-overdue-title { font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#9a3412; }
+.task-overdue-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:7px; padding:8px; }
 .wk-prog-row { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
 .wk-prog-track { flex:1; height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
 .wk-prog-fill { height:100%; background:var(--acc); border-radius:2px; transition:width .4s ease, background .25s; }
@@ -251,6 +272,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .tc-body { flex:1; min-width:0; }
 .tc-name { font-size:12px; color:var(--ink); line-height:1.35; word-break:break-word; }
 .tc-who { font-size:10px; color:var(--ink-4); font-weight:600; margin-top:1px; }
+.tc-date { font-size:10px; color:var(--ink-3); font-weight:700; margin-top:1px; }
 .tc-actions { display:flex; align-items:center; gap:3px; flex-shrink:0; opacity:.3; transition:opacity .1s; }
 .tc:hover .tc-actions, .tc:focus-within .tc-actions { opacity:1; }
 .tc-act { border:none; background:none; color:var(--ink-4); cursor:pointer; font-size:10px; padding:1px 3px; border-radius:3px; transition:background .1s, color .1s; flex-shrink:0; }
@@ -327,6 +349,10 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .tc-actions { width:100%; justify-content:flex-end; }
   .tc-actions { opacity:1; }
   .item-del { opacity:1; pointer-events:auto; }
+  .task-add { flex-wrap:wrap; }
+  .task-add input { flex-basis:100%; border-bottom:1px solid var(--line-2); }
+  .task-add button, .task-add select { flex:1; min-width:0; }
+  .task-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 
 @media(hover:none){
@@ -459,6 +485,29 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
             <button id="taskSubmit" onclick="submitTask()">Planifier</button>
             <button class="form-cancel" id="taskCancel" onclick="cancelTaskEdit()">Annuler</button>
           </div>
+          <div class="task-tools">
+            <div class="task-filters">
+              <div class="task-strip" id="taskScopeStrip">
+                <button class="task-chip active" data-scope="week" onclick="setTaskScope(this)">Semaine</button>
+                <button class="task-chip" data-scope="today" onclick="setTaskScope(this)">Aujourd'hui</button>
+                <button class="task-chip" data-scope="late" onclick="setTaskScope(this)">Retard</button>
+              </div>
+              <div class="task-strip" id="taskStatusStrip">
+                <button class="task-chip active" data-status="all" onclick="setTaskStatus(this)">Toutes</button>
+                <button class="task-chip" data-status="open" onclick="setTaskStatus(this)">A faire</button>
+                <button class="task-chip" data-status="done" onclick="setTaskStatus(this)">Faites</button>
+              </div>
+              <select class="task-filter-select" id="taskWhoFilter" onchange="setTaskWhoFilter(this.value)">
+                <option value="all">Tous</option>
+                <option value="">Sans personne</option>
+                <option value="paul">Paul</option>
+                <option value="alexia">Alexia</option>
+              </select>
+            </div>
+            <button class="task-action" onclick="moveLateTasksToToday()">Reporter le retard</button>
+          </div>
+          <div class="task-stats" id="taskStats"></div>
+          <div class="task-overdue" id="taskOverdue"></div>
           <div class="wk-prog-row">
             <div class="wk-prog-track"><div class="wk-prog-fill" id="wkFill" style="width:0%"></div></div>
             <div class="wk-prog-lbl" id="wkLbl"></div>
@@ -515,6 +564,9 @@ let cat      = 'all';
 let filter   = 'all';
 let color    = 'ic-1';
 let wkOffset = 0;
+let taskScope = 'week';
+let taskStatus = 'all';
+let taskWho = 'all';
 let search   = '';
 let editingWishId = null;
 let editingIdeaId = null;
