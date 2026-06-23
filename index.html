@@ -215,6 +215,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .task-add input::placeholder { color:var(--ink-4); }
 .ta-sep { width:1px; height:20px; background:var(--line); flex-shrink:0; }
 .task-add select { border:none; outline:none; padding:0 12px; font-size:12px; font-weight:600; color:var(--ink-2); background:transparent; cursor:pointer; height:42px; flex-shrink:0; }
+.task-add input[type="date"] { flex:0 0 132px; height:42px; padding:0 10px; font-size:12px; font-weight:600; color:var(--ink-2); border:none; border-left:1px solid var(--line); cursor:pointer; }
 .task-add button { border:none; background:var(--acc); color:#fff; padding:0 16px; font-weight:700; font-size:11px; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; height:42px; border-left:1px solid var(--line); white-space:nowrap; transition:opacity .15s, background .15s, color .15s; }
 .task-add button:hover { opacity:.85; }
 .task-add .form-cancel { height:42px; border-radius:0; border-top:none; border-bottom:none; border-right:none; padding:0 12px; background:var(--white); }
@@ -273,6 +274,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .tc-name { font-size:12px; color:var(--ink); line-height:1.35; word-break:break-word; }
 .tc-who { font-size:10px; color:var(--ink-4); font-weight:600; margin-top:1px; }
 .tc-date { font-size:10px; color:var(--ink-3); font-weight:700; margin-top:1px; }
+.tc-repeat { display:inline-flex; align-items:center; width:max-content; margin-top:4px; padding:1px 6px; border-radius:3px; background:var(--acc-bg); color:var(--acc); border:1px solid var(--acc-ln); font-size:9.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
 .tc-actions { display:flex; align-items:center; gap:3px; flex-shrink:0; opacity:.3; transition:opacity .1s; }
 .tc:hover .tc-actions, .tc:focus-within .tc-actions { opacity:1; }
 .tc-act { border:none; background:none; color:var(--ink-4); cursor:pointer; font-size:10px; padding:1px 3px; border-radius:3px; transition:background .1s, color .1s; flex-shrink:0; }
@@ -352,6 +354,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .task-add { flex-wrap:wrap; }
   .task-add input { flex-basis:100%; border-bottom:1px solid var(--line-2); }
   .task-add button, .task-add select { flex:1; min-width:0; }
+  .task-add input[type="date"] { flex:1 1 120px; border-top:1px solid var(--line-2); }
   .task-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 
@@ -482,6 +485,14 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
               <option value="paul">Paul</option>
               <option value="alexia">Alexia</option>
             </select>
+            <div class="ta-sep"></div>
+            <select id="tqRepeat" title="Récurrence">
+              <option value="">Une fois</option>
+              <option value="daily">Tous les jours</option>
+              <option value="weekly">Chaque semaine</option>
+              <option value="monthly">Chaque mois</option>
+            </select>
+            <input type="date" id="tqUntil" title="Fin de récurrence. Laisser vide pour sans fin.">
             <button id="taskSubmit" onclick="submitTask()">Planifier</button>
             <button class="form-cancel" id="taskCancel" onclick="cancelTaskEdit()">Annuler</button>
           </div>
@@ -554,6 +565,7 @@ const DAY_S  = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 const MONTHS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
 const PRIO_O = {high:0,mid:1,low:2};
 const WHO_L  = {paul:'Paul',alexia:'Alexia',duo:'Paul & Alexia','':-''};
+const TASK_SERIES_KEY = 'fy_task_series_v1';
 
 /* ══════════════════════════════════════
    STATE
@@ -1027,6 +1039,71 @@ document.getElementById('ideaTi').addEventListener('keydown',e=>{if(e.key==='Ent
 /* ══════════════════════════════════════
    TÂCHES
 ══════════════════════════════════════ */
+function loadTaskSeries() {
+  try { return JSON.parse(localStorage.getItem(TASK_SERIES_KEY)||'[]'); }
+  catch { return []; }
+}
+function saveTaskSeries(series) {
+  localStorage.setItem(TASK_SERIES_KEY, JSON.stringify(series));
+}
+function findTaskSeries(taskId) {
+  const id=Number(taskId);
+  return loadTaskSeries().find(s=>(s.taskIds||[]).map(Number).includes(id));
+}
+function taskDate(key) {
+  const d=new Date(key+'T00:00:00');
+  d.setHours(0,0,0,0);
+  return d;
+}
+function addMonthsSafe(date, months) {
+  const d=new Date(date);
+  const day=d.getDate();
+  d.setDate(1);
+  d.setMonth(d.getMonth()+months);
+  d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth()+1, 0).getDate()));
+  return d;
+}
+function seriesDates(rule, fromK, toK) {
+  const out=[];
+  const from=taskDate(fromK), to=taskDate(toK);
+  let cur=taskDate(rule.start);
+  let guard=0;
+  while(cur<=to && guard<900) {
+    if(cur>=from) out.push(dateKey(cur));
+    if(rule.repeat==='daily') cur.setDate(cur.getDate()+1);
+    else if(rule.repeat==='weekly') cur.setDate(cur.getDate()+7);
+    else if(rule.repeat==='monthly') cur=addMonthsSafe(cur,1);
+    else break;
+    guard++;
+  }
+  return out.filter(k=>!rule.until || k<=rule.until);
+}
+async function createSeriesOccurrences(rule, fromK, toK, existingTasks=null) {
+  const tasks=existingTasks || await getTasks();
+  const known=new Set(tasks.map(t=>`${t.day}|${(t.name||'').toLowerCase()}|${t.who||''}`));
+  const rows=seriesDates(rule, fromK, toK)
+    .filter(day=>!known.has(`${day}|${(rule.name||'').toLowerCase()}|${rule.who||''}`))
+    .map((day,i)=>({id:Date.now()+i,name:rule.name,day,who:rule.who||'',done:false}));
+  for(const row of rows) await sbPost('tasks',row);
+  if(rows.length) {
+    const all=loadTaskSeries();
+    const idx=all.findIndex(s=>s.id===rule.id);
+    if(idx>=0) {
+      all[idx].taskIds=[...new Set([...(all[idx].taskIds||[]), ...rows.map(r=>r.id)])];
+      saveTaskSeries(all);
+    }
+    bust('tasks');
+  }
+  return rows.length;
+}
+async function ensureRecurringForWindow(fromK, toK, existingTasks=null) {
+  const series=loadTaskSeries().filter(s=>!s.until || s.until>=fromK);
+  for(const rule of series) await createSeriesOccurrences(rule, fromK, toK, existingTasks);
+}
+function repeatLabel(repeat) {
+  return repeat==='daily'?'Quotidien':repeat==='weekly'?'Hebdo':repeat==='monthly'?'Mensuel':'Récurrent';
+}
+
 function fillDaySel() {
   const m=monday(wkOffset); const t=todayK();
   document.getElementById('tqDay').innerHTML=Array.from({length:7},(_,i)=>{
@@ -1037,9 +1114,24 @@ function fillDaySel() {
 
 async function addTask() {
   const name=document.getElementById('tqName').value.trim(); if(!name){document.getElementById('tqName').focus();return;}
-  const row={id:Date.now(),name,day:document.getElementById('tqDay').value,who:document.getElementById('tqWho').value,done:false};
-  await sbPost('tasks',row);
+  const day=document.getElementById('tqDay').value;
+  const who=document.getElementById('tqWho').value;
+  const repeat=document.getElementById('tqRepeat').value;
+  const until=document.getElementById('tqUntil').value;
+  if(repeat) {
+    const id='s'+Date.now();
+    const horizon=until || offsetDayK(365);
+    const rule={id,name,who,start:day,repeat,until:until||'',taskIds:[],createdAt:Date.now()};
+    const all=loadTaskSeries();
+    all.push(rule); saveTaskSeries(all);
+    await createSeriesOccurrences(rule, day, horizon);
+  } else {
+    const row={id:Date.now(),name,day,who,done:false};
+    await sbPost('tasks',row);
+  }
   bust('tasks'); document.getElementById('tqName').value='';
+  document.getElementById('tqRepeat').value='';
+  document.getElementById('tqUntil').value='';
   await renderTasks(); document.getElementById('tqName').focus();
 }
 
@@ -1051,6 +1143,10 @@ function cancelTaskEdit() {
   editingTaskId=null;
   document.getElementById('tqName').value='';
   document.getElementById('tqWho').value='';
+  document.getElementById('tqRepeat').value='';
+  document.getElementById('tqUntil').value='';
+  document.getElementById('tqRepeat').disabled=false;
+  document.getElementById('tqUntil').disabled=false;
   document.getElementById('taskSubmit').textContent='Planifier';
   document.getElementById('taskCancel').classList.remove('show');
   document.getElementById('tqName').placeholder='Nouvelle tâche…';
@@ -1064,6 +1160,10 @@ async function editTask(id) {
   document.getElementById('tqName').value=item.name||'';
   document.getElementById('tqDay').value=item.day||todayK();
   document.getElementById('tqWho').value=item.who||'';
+  document.getElementById('tqRepeat').value='';
+  document.getElementById('tqUntil').value='';
+  document.getElementById('tqRepeat').disabled=true;
+  document.getElementById('tqUntil').disabled=true;
   document.getElementById('taskSubmit').textContent='Enregistrer';
   document.getElementById('taskCancel').classList.add('show');
   document.getElementById('tqName').placeholder='Modifier la tâche…';
@@ -1098,8 +1198,31 @@ async function toggleTask(id) {
 }
 
 async function delTask(id) {
-  if(!confirm('Supprimer cette tâche ?')) return;
-  await sbDel('tasks',id); bust('tasks'); await renderTasks(); await updateHeader();
+  const series=findTaskSeries(id);
+  if(series && confirm('Supprimer toute la tâche récurrente ?\n\nOK = toute la série\nAnnuler = seulement cette occurrence')) {
+    await delTaskSeries(series.id);
+    return;
+  }
+  if(!series && !confirm('Supprimer cette tâche ?')) return;
+  await sbDel('tasks',id);
+  if(series) {
+    const all=loadTaskSeries();
+    const idx=all.findIndex(s=>s.id===series.id);
+    if(idx>=0) {
+      all[idx].taskIds=(all[idx].taskIds||[]).filter(x=>Number(x)!==Number(id));
+      saveTaskSeries(all);
+    }
+  }
+  bust('tasks'); await renderTasks(); await updateHeader();
+}
+
+async function delTaskSeries(seriesId) {
+  const all=loadTaskSeries();
+  const series=all.find(s=>s.id===seriesId);
+  if(!series) return;
+  await Promise.all((series.taskIds||[]).map(id=>sbDel('tasks',id)));
+  saveTaskSeries(all.filter(s=>s.id!==seriesId));
+  bust('tasks'); await renderTasks(); await updateHeader();
 }
 
 async function moveTaskToTomorrow(id) {
@@ -1107,14 +1230,46 @@ async function moveTaskToTomorrow(id) {
   bust('tasks'); await renderTasks(); await updateHeader();
 }
 
+async function moveLateTasksToToday() {
+  const tasks=await getTasks();
+  const today=todayK();
+  const late=tasks.filter(t=>!t.done && t.day<today);
+  if(!late.length) return;
+  await Promise.all(late.map(t=>sbPatch('tasks',t.id,{day:today,done:false})));
+  bust('tasks'); await renderTasks(); await updateHeader();
+}
+
+function setTaskScope(el) {
+  taskScope=el.dataset.scope;
+  document.querySelectorAll('#taskScopeStrip .task-chip').forEach(b=>b.classList.toggle('active',b===el));
+  renderTasks();
+}
+function setTaskStatus(el) {
+  taskStatus=el.dataset.status;
+  document.querySelectorAll('#taskStatusStrip .task-chip').forEach(b=>b.classList.toggle('active',b===el));
+  renderTasks();
+}
+function setTaskWhoFilter(value) {
+  taskWho=value;
+  renderTasks();
+}
+
 function shiftWeek(n) { wkOffset+=n; renderTasks(); }
 function goToday()    { wkOffset=0;  renderTasks(); }
 
 async function renderTasks() {
   fillDaySel();
-  const tasks=await getTasks();
+  let tasks=await getTasks();
   const m=monday(wkOffset); const t=todayK();
   const days=Array.from({length:7},(_,i)=>{const d=new Date(m);d.setDate(d.getDate()+i);return{key:dateKey(d),d:new Date(d),i};});
+  await ensureRecurringForWindow(days[0].key, days[6].key, tasks);
+  tasks=await getTasks();
+  const seriesByTask=new Map();
+  loadTaskSeries().forEach(s=>(s.taskIds||[]).forEach(id=>seriesByTask.set(Number(id),s)));
+  const applyTaskFilters=list=>list
+    .filter(x=>taskStatus==='all' || (taskStatus==='open'?!x.done:x.done))
+    .filter(x=>taskWho==='all' || (x.who||'')===taskWho)
+    .filter(x=>matchSearch(x.name,WHO_L[x.who]||'',seriesByTask.get(Number(x.id))?.repeat||''));
 
   const end=new Date(m); end.setDate(end.getDate()+6);
   document.getElementById('wkTitle').textContent=`${m.getDate()} ${MONTHS[m.getMonth()]} — ${end.getDate()} ${MONTHS[end.getMonth()]} ${end.getFullYear()}`;
@@ -1123,9 +1278,41 @@ async function renderTasks() {
   const wd=wt.filter(x=>x.done).length;
   document.getElementById('wkFill').style.width=wt.length?`${(wd/wt.length)*100}%`:'0%';
   document.getElementById('wkLbl').textContent=`${wd} / ${wt.length} tâche${wt.length!==1?'s':''}`;
+  document.getElementById('taskStats').innerHTML=[
+    ["Aujourd'hui",tasks.filter(x=>x.day===t&&!x.done).length,''],
+    ['En retard',tasks.filter(x=>x.day<t&&!x.done).length,'hot'],
+    ['Semaine',wt.filter(x=>!x.done).length,''],
+    ['Terminées',wd,'']
+  ].map(([k,v,cls])=>`<div class="task-stat ${cls}"><div class="task-stat-k">${k}</div><div class="task-stat-v">${v}</div></div>`).join('');
 
-  document.getElementById('dayGrid').innerHTML=days.map(({key,d,i})=>{
-    const dt=tasks.filter(x=>x.day===key).filter(x=>matchSearch(x.name,WHO_L[x.who]||''));
+  const late=applyTaskFilters(tasks.filter(x=>x.day<t&&!x.done));
+  document.getElementById('taskOverdue').classList.toggle('show', late.length>0 && taskScope!=='today');
+  document.getElementById('taskOverdue').innerHTML=late.length?`
+    <div class="task-overdue-head">
+      <div class="task-overdue-title">${late.length} en retard</div>
+      <button class="task-action" onclick="moveLateTasksToToday()">Ramener à aujourd'hui</button>
+    </div>
+    <div class="task-overdue-list">${late.map(x=>{
+      const s=seriesByTask.get(Number(x.id));
+      return `<div class="tc ${x.done?'tdone':''}">
+        <div class="tcb" onclick="toggleTask(${x.id})">${svgChkSm}</div>
+        <div class="tc-body">
+          <div class="tc-name">${esc(x.name)}</div>
+          <div class="tc-date">${fmt(x.day)}${x.who?` · ${WHO_L[x.who]||''}`:''}</div>
+          ${s?`<div class="tc-repeat">${repeatLabel(s.repeat)}</div>`:''}
+        </div>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="tc-act tc-move" title="Reporter à demain" onclick="moveTaskToTomorrow(${x.id})">Demain</button>
+          <button class="tc-act tc-edit" title="Modifier" onclick="editTask(${x.id})">${svgEdit}<span>Modifier</span></button>
+          ${s?`<button class="tc-act tc-move" title="Supprimer la série" onclick="delTaskSeries('${s.id}')">Série</button>`:''}
+          <button class="tc-act tc-del" title="Supprimer" onclick="delTask(${x.id})">✕</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`:'';
+
+  const visibleDays=taskScope==='today' ? days.filter(x=>x.key===t) : taskScope==='late' ? [] : days;
+  document.getElementById('dayGrid').innerHTML=visibleDays.length?visibleDays.map(({key,d,i})=>{
+    const dt=applyTaskFilters(tasks.filter(x=>x.day===key));
     const done=dt.filter(x=>x.done).length;
     return `<div class="day-col ${key===t?'is-today':''}">
       <div class="day-hd">
@@ -1133,26 +1320,31 @@ async function renderTasks() {
         ${dt.length?`<div class="day-cnt">${done}/${dt.length}</div>`:''}
       </div>
       <div class="day-tasks">
-        ${dt.length?dt.map(x=>`
+        ${dt.length?dt.map(x=>{
+          const s=seriesByTask.get(Number(x.id));
+          return `
           <div class="tc ${x.done?'tdone':''}">
             <div class="tcb" onclick="toggleTask(${x.id})">${svgChkSm}</div>
             <div class="tc-body">
               <div class="tc-name">${esc(x.name)}</div>
               ${x.who?`<div class="tc-who">${WHO_L[x.who]||''}</div>`:''}
+              ${s?`<div class="tc-repeat">${repeatLabel(s.repeat)}</div>`:''}
             </div>
             <div class="tc-actions" onclick="event.stopPropagation()">
-              <button class="tc-act tc-move" title="Reporter à demain" onclick="moveTaskToTomorrow(${x.id})">Demain</button>
+              ${!x.done && key<=t?`<button class="tc-act tc-move" title="Reporter à demain" onclick="moveTaskToTomorrow(${x.id})">Demain</button>`:''}
               <button class="tc-act tc-edit" title="Modifier" onclick="editTask(${x.id})">${svgEdit}<span>Modifier</span></button>
+              ${s?`<button class="tc-act tc-move" title="Supprimer la série" onclick="delTaskSeries('${s.id}')">Série</button>`:''}
               <button class="tc-act tc-del" title="Supprimer" onclick="delTask(${x.id})">✕</button>
             </div>
-          </div>`).join(''):`<div style="padding:6px 4px;font-size:11.5px;color:var(--ink-4);font-weight:600;">Rien</div>`}
+          </div>`;
+        }).join(''):`<div style="padding:6px 4px;font-size:11.5px;color:var(--ink-4);font-weight:600;">Rien</div>`}
       </div>
       <div class="day-inp-row">
         <input type="text" class="day-inp" id="di-${key}" placeholder="+ Ajouter…" maxlength="60"
           onkeydown="if(event.key==='Enter')addTaskDay('${key}')">
       </div>
     </div>`;
-  }).join('');
+  }).join(''):`<div class="empty"><div class="empty-line"></div><div class="empty-txt">${late.length?'Retard affiché ci-dessus':'Aucun retard'}</div></div>`;
 
   await updateHeader();
 }
