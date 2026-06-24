@@ -297,6 +297,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 /* ── SECTION SWITCH ── */
 .section { display:none; }
 .section.active { display:block; }
+#sec-plants.active { display:flex; flex-direction:column; }
 
 /* ── EMPTY ── */
 .empty { padding:52px 26px; text-align:center; }
@@ -423,6 +424,117 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .item-del { opacity:1; pointer-events:auto; }
   .item-edit, .idea-card-actions, .tc-actions { opacity:1; }
 }
+
+/* ══ PLANTES ══ */
+.pl-wrap { display:flex; flex:1; overflow:hidden; min-height:calc(100vh - 52px); }
+.pl-sidebar { width:200px; flex-shrink:0; background:var(--white); border-right:1px solid var(--line); display:flex; flex-direction:column; overflow-y:auto; padding:14px 0; }
+.pl-sidebar-ttl { font-size:9px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-4); padding:0 18px; margin-bottom:6px; }
+.pl-plant-btn { display:flex; align-items:center; gap:9px; width:100%; padding:9px 16px; border:none; background:transparent; text-align:left; font-size:13px; color:var(--ink-2); cursor:pointer; transition:background .1s, color .1s; border-radius:0; }
+.pl-plant-btn:hover { background:var(--line-2); color:var(--ink); }
+.pl-plant-btn.active { background:var(--acc-bg); color:var(--acc); font-weight:700; }
+.pl-plant-icon { font-size:18px; flex-shrink:0; }
+.pl-plant-lbl { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pl-add-plant { margin:10px 10px 0; display:flex; gap:5px; }
+.pl-add-plant input { flex:1; border:1px solid var(--line); border-radius:var(--r); padding:6px 9px; font-size:12px; color:var(--ink); background:var(--paper); outline:none; min-width:0; font-family:var(--ff); }
+.pl-add-plant input:focus { border-color:var(--acc); }
+.pl-add-plant input::placeholder { color:var(--ink-4); }
+.pl-add-plant button { border:none; background:var(--acc); color:#fff; border-radius:var(--r); width:28px; height:28px; cursor:pointer; font-size:17px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity .15s; }
+.pl-add-plant button:hover { opacity:.8; }
+.pl-add-url { margin:5px 10px 0; }
+.pl-add-url input { width:100%; border:1px solid var(--line); border-radius:var(--r); padding:5px 9px; font-size:11.5px; color:var(--ink); background:var(--paper); outline:none; font-family:var(--ff); }
+.pl-add-url input:focus { border-color:var(--acc); }
+.pl-add-url input::placeholder { color:var(--ink-4); }
+.pl-main { flex:1; overflow-y:auto; min-width:0; display:flex; flex-direction:column; max-height:calc(100vh - 52px); }
+.pl-head { padding:20px 26px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.pl-head-title { font-weight:800; font-size:20px; letter-spacing:-.03em; display:flex; align-items:center; gap:10px; }
+.pl-head-title span { color:var(--acc); }
+.pl-head-sub { font-size:12px; color:var(--ink-3); margin-top:3px; }
+.pl-season-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:.04em; }
+.pl-season-badge.spring { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+.pl-season-badge.summer { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+.pl-season-badge.autumn { background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; }
+.pl-season-badge.winter { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+.pl-gt-link { display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:4px; background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; font-size:11.5px; font-weight:700; text-decoration:none; transition:background .12s, opacity .12s; white-space:nowrap; }
+.pl-gt-link:hover { background:#dcfce7; }
+.pl-gt-link svg { flex-shrink:0; }
+.pl-del-btn { border:1px solid #fecaca; background:#fff; color:#dc2626; border-radius:4px; padding:3px 9px; font-size:10.5px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; cursor:pointer; transition:background .12s; }
+.pl-del-btn:hover { background:#fef2f2; }
+.pl-subtabs { display:flex; gap:0; border-bottom:1px solid var(--line); padding:0 26px; background:var(--white); margin-top:14px; }
+.pl-stab { padding:9px 16px; font-size:12px; font-weight:700; letter-spacing:.03em; border:none; background:transparent; color:var(--ink-3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color .12s, border-color .12s; white-space:nowrap; }
+.pl-stab:hover { color:var(--ink); }
+.pl-stab.active { color:var(--acc); border-bottom-color:var(--acc); }
+.pl-content { padding:18px 26px 40px; flex:1; }
+.pl-care-header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.pl-care-title { font-weight:800; font-size:15px; }
+.pl-freq-form { display:flex; align-items:center; gap:8px; background:var(--white); border:1px solid var(--line); border-radius:var(--r); padding:8px 12px; margin-bottom:16px; flex-wrap:wrap; }
+.pl-freq-form label { font-size:12px; font-weight:700; color:var(--ink-3); white-space:nowrap; }
+.pl-freq-form select { border:1px solid var(--line); border-radius:4px; padding:4px 8px; font-size:12px; font-weight:600; color:var(--ink-2); background:var(--paper); outline:none; cursor:pointer; }
+.pl-freq-form select:focus { border-color:var(--acc); }
+.pl-freq-form input[type="number"] { border:1px solid var(--line); border-radius:4px; padding:4px 8px; font-size:12px; font-weight:600; color:var(--ink-2); background:var(--paper); outline:none; width:60px; }
+.pl-freq-form input[type="number"]:focus { border-color:var(--acc); }
+.pl-freq-save { border:none; background:var(--acc); color:#fff; border-radius:4px; padding:5px 13px; font-size:11.5px; font-weight:700; cursor:pointer; transition:opacity .15s; }
+.pl-freq-save:hover { opacity:.85; }
+.pl-freq-info { font-size:11px; color:var(--ink-3); font-style:italic; }
+.pl-add-entry { display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+.pl-add-entry input[type="date"] { border:1px solid var(--line); border-radius:var(--r); padding:7px 10px; font-size:12.5px; color:var(--ink-2); background:var(--white); outline:none; cursor:pointer; }
+.pl-add-entry input[type="date"]:focus { border-color:var(--acc); }
+.pl-add-entry input[type="text"] { flex:1; border:1px solid var(--line); border-radius:var(--r); padding:7px 11px; font-size:13px; color:var(--ink); background:var(--white); outline:none; font-family:var(--ff); }
+.pl-add-entry input[type="text"]:focus { border-color:var(--acc); }
+.pl-add-entry input[type="text"]::placeholder { color:var(--ink-4); }
+.pl-add-entry button { border:none; background:var(--acc); color:#fff; border-radius:var(--r); padding:7px 15px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; transition:opacity .15s; }
+.pl-add-entry button:hover { opacity:.85; }
+.pl-entries { display:flex; flex-direction:column; gap:5px; }
+.pl-entry { display:flex; align-items:center; gap:10px; padding:10px 13px; background:var(--white); border:1px solid var(--line); border-radius:var(--r); transition:border-color .12s; }
+.pl-entry:hover { border-color:#d8d8d8; }
+.pl-entry.done { background:var(--line-2); }
+.pl-entry.done .pl-entry-label { text-decoration:line-through; color:var(--ink-4); }
+.pl-entry.upcoming { border-left:3px solid var(--acc); }
+.pl-entry.overdue  { border-left:3px solid #e53e3e; }
+.pl-echk { width:18px; height:18px; flex-shrink:0; border:1.5px solid var(--ink-4); border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; background:transparent; }
+.pl-echk:hover { border-color:var(--acc); }
+.pl-entry.done .pl-echk { background:var(--acc); border-color:var(--acc); }
+.pl-echk svg { display:none; }
+.pl-entry.done .pl-echk svg { display:block; }
+.pl-entry-body { flex:1; min-width:0; }
+.pl-entry-label { font-size:13px; font-weight:600; color:var(--ink); }
+.pl-entry-date { font-size:11px; color:var(--ink-3); font-weight:600; margin-top:1px; }
+.pl-entry-badge { font-size:10px; padding:1px 6px; border-radius:3px; background:var(--acc-bg); color:var(--acc); border:1px solid var(--acc-ln); font-weight:700; flex-shrink:0; }
+.pl-entry-badge.overdue { background:#fef2f2; color:#dc2626; border-color:#fecaca; }
+.pl-entry-del { border:none; background:transparent; color:var(--ink-4); cursor:pointer; padding:4px 6px; border-radius:4px; font-size:12px; transition:background .1s, color .1s; opacity:0; }
+.pl-entry:hover .pl-entry-del { opacity:1; }
+.pl-entry-del:hover { background:#fef2f2; color:#dc2626; }
+.pl-section-title { font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-4); margin:18px 0 8px; }
+.pl-section-title:first-child { margin-top:0; }
+.pl-empty { padding:32px 0; text-align:center; }
+.pl-empty-txt { font-size:12px; color:var(--ink-4); font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+/* Global view */
+.pl-global-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-top:14px; }
+.pl-global-card { background:var(--white); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.pl-global-card-head { padding:11px 14px; border-bottom:1px solid var(--line-2); display:flex; align-items:center; gap:9px; }
+.pl-global-card-name { font-weight:800; font-size:14px; flex:1; }
+.pl-global-card-cnt { font-size:11px; color:var(--ink-3); font-weight:700; }
+.pl-global-card-body { padding:10px 14px; display:flex; flex-direction:column; gap:5px; }
+.pl-global-item { display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink-2); }
+.pl-global-item-type { font-size:10px; font-weight:800; letter-spacing:.04em; color:var(--ink-4); min-width:72px; }
+.pl-global-item-date { font-size:11px; color:var(--ink-3); margin-left:auto; font-weight:600; }
+.pl-global-item.hot .pl-global-item-date { color:#dc2626; font-weight:800; }
+.pl-seasonal-block { margin-top:20px; }
+.pl-seasonal-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.pl-seasonal-title { font-weight:800; font-size:14px; }
+/* Responsive */
+@media(max-width:720px){
+  .pl-wrap { flex-direction:column; }
+  .pl-sidebar { width:100%; height:auto; flex-direction:row; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; padding:8px 0; border-right:none; border-bottom:1px solid var(--line); scrollbar-width:none; }
+  .pl-sidebar::-webkit-scrollbar { display:none; }
+  .pl-sidebar-ttl { display:none; }
+  .pl-plant-btn { flex:0 0 auto; white-space:nowrap; padding:7px 13px; border-radius:var(--r); }
+  .pl-add-plant { display:none; }
+  .pl-add-url { display:none; }
+  .pl-head,.pl-content { padding-left:14px; padding-right:14px; }
+  .pl-subtabs { padding:0 14px; }
+  .pl-freq-form { gap:6px; }
+  .pl-add-entry { flex-wrap:wrap; }
+}
 </style>
 </head>
 <body class="u-paul">
@@ -436,6 +548,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
       <button class="sec-tab active" data-s="wishlist" onclick="setSection(this)"><span class="sec-dot"></span>Wishlist</button>
       <button class="sec-tab" data-s="ideas"    onclick="setSection(this)"><span class="sec-dot"></span>Idées</button>
       <button class="sec-tab" data-s="tasks"    onclick="setSection(this)"><span class="sec-dot"></span>Tâches</button>
+      <button class="sec-tab" data-s="plants"   onclick="setSection(this)"><span class="sec-dot"></span>Plantes</button>
     </div>
     <div class="person-sw" id="personSw"></div>
   </nav>
@@ -594,6 +707,26 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
             <button class="wk-btn" onclick="shiftWeek(1)">Suiv. →</button>
           </div>
           <div class="day-grid" id="dayGrid"></div>
+        </div>
+      </div>
+
+      <!-- PLANTES -->
+      <div class="section" id="sec-plants">
+        <div class="pl-wrap">
+          <aside class="pl-sidebar" id="plSidebar">
+            <div class="pl-sidebar-ttl">Mes plantes</div>
+            <div id="plPlantList"></div>
+            <div class="pl-add-plant" id="plAddZone">
+              <input type="text" id="plNewName" placeholder="Nom de la plante…" maxlength="40">
+              <button onclick="addPlant()">+</button>
+            </div>
+            <div class="pl-add-url" id="plAddUrlZone">
+              <input type="url" id="plNewUrl" placeholder="Lien La Green Touch (optionnel)…">
+            </div>
+          </aside>
+          <div class="pl-main" id="plMain">
+            <div id="plContent"></div>
+          </div>
         </div>
       </div>
     </main>
@@ -771,11 +904,15 @@ async function setSection(el) {
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+section).classList.add('active');
   const isWish = section==='wishlist';
+  const isPlants = section==='plants';
   document.getElementById('sidebar').classList.toggle('hidden', !isWish);
   applyTheme();
   renderPersonSw();
   document.getElementById('prioLeg').style.display = isWish ? '' : 'none';
   document.getElementById('addCatZone').style.display = isWish ? '' : 'none';
+  document.getElementById('phTitle').closest('.ph').style.display = isPlants ? 'none' : '';
+  document.getElementById('progRow').style.display = isPlants ? 'none' : '';
+  if(isPlants) { renderPlants(); return; }
   await renderAll();
 }
 
@@ -871,7 +1008,7 @@ document.getElementById('catInp').addEventListener('keydown',e=>{if(e.key==='Ent
 ══════════════════════════════════════ */
 async function updateHeader() {
   const p=PERSONS.find(x=>x.id===person);
-  const titles={wishlist:'Wishlist',ideas:'Idées',tasks:'Tâches'};
+  const titles={wishlist:'Wishlist',ideas:'Idées',tasks:'Tâches',plants:'Plantes'};
   let pv=0, pl='', sub='';
   let currentCat=null;
 
@@ -1435,6 +1572,7 @@ document.getElementById('tqName').addEventListener('keydown',e=>{if(e.key==='Ent
 ══════════════════════════════════════ */
 async function renderAll() {
   await Promise.all([updateHeader(), renderSidebar(), renderWishlist(), renderIdeas(), renderTasks()]);
+  if(section==='plants') renderPlants();
 }
 
 /* ══════════════════════════════════════
@@ -1449,6 +1587,450 @@ applyTheme();
 renderPersonSw();
 loader(true);
 renderAll().then(()=>loader(false));
+
+/* ══════════════════════════════════════
+   PLANTES
+══════════════════════════════════════ */
+const PL_KEY   = 'fy_plants_v1';
+const PL_ENT_KEY = 'fy_plant_entries_v1';
+const CARE_TYPES = [
+  { id:'water',    label:'Arrosage',      icon:'💧' },
+  { id:'mist',     label:'Humidification',icon:'🌫️' },
+  { id:'repot',    label:'Rempotage',     icon:'🪴' },
+  { id:'fertilize',label:'Engrais',       icon:'🌱' },
+];
+const SEASONS = [
+  { id:'spring', label:'Printemps', icon:'🌸', months:[2,3,4] },
+  { id:'summer', label:'Été',       icon:'☀️', months:[5,6,7] },
+  { id:'autumn', label:'Automne',   icon:'🍂', months:[8,9,10] },
+  { id:'winter', label:'Hiver',     icon:'❄️', months:[11,0,1] },
+];
+const FREQ_LABELS = {
+  '1d':'Chaque jour','2d':'Tous les 2 jours','3d':'Tous les 3 jours',
+  '1w':'Chaque semaine','2w':'Toutes les 2 semaines','1m':'Chaque mois',
+  '3m':'Tous les 3 mois','6m':'Tous les 6 mois','1y':'Chaque année',
+};
+
+let plActivePlant = null; // 'global' | plant.id
+let plActiveTab   = 'water';
+
+function loadPlants() {
+  try { return JSON.parse(localStorage.getItem(PL_KEY)||'[]'); } catch { return []; }
+}
+function savePlants(arr) { localStorage.setItem(PL_KEY, JSON.stringify(arr)); }
+function loadEntries() {
+  try { return JSON.parse(localStorage.getItem(PL_ENT_KEY)||'[]'); } catch { return []; }
+}
+function saveEntries(arr) { localStorage.setItem(PL_ENT_KEY, JSON.stringify(arr)); }
+
+function currentSeason() {
+  const m = new Date().getMonth();
+  return SEASONS.find(s=>s.months.includes(m)) || SEASONS[0];
+}
+
+function freqToDays(freq) {
+  if(!freq) return null;
+  const n=parseInt(freq); const u=freq.slice(-1);
+  if(u==='d') return n;
+  if(u==='w') return n*7;
+  if(u==='m') return n*30;
+  if(u==='y') return n*365;
+  return null;
+}
+
+function addDaysToKey(dateKey, days) {
+  const d = new Date(dateKey+'T00:00:00');
+  d.setDate(d.getDate()+days);
+  return dateKey_(d);
+}
+function dateKey_(d) {
+  return d.toISOString().slice(0,10);
+}
+
+function generateEntries(plant, careId, fromK, toK) {
+  const care = (plant.cares||{})[careId]||{};
+  if(!care.freq) return [];
+  const days = freqToDays(care.freq);
+  if(!days) return [];
+  const entries = loadEntries().filter(e=>e.plantId===plant.id && e.careId===careId);
+  const existing = new Set(entries.map(e=>e.date));
+  const start = care.startDate || fromK;
+  const out = [];
+  let cur = new Date(start+'T00:00:00');
+  const end = new Date(toK+'T00:00:00');
+  let guard = 0;
+  while(cur <= end && guard < 200) {
+    const k = dateKey_(cur);
+    if(k >= fromK && !existing.has(k)) out.push({ id:'pe'+Date.now()+Math.random().toString(36).slice(2), plantId:plant.id, careId, date:k, done:false, auto:true });
+    cur.setDate(cur.getDate()+days);
+    guard++;
+  }
+  return out;
+}
+
+function ensurePlantEntries(plant, careId) {
+  if(!(plant.cares||{})[careId]?.freq) return;
+  const today = todayK();
+  const horizon = offsetDayK(90);
+  const newEntries = generateEntries(plant, careId, today, horizon);
+  if(newEntries.length) {
+    const all = loadEntries();
+    saveEntries([...all, ...newEntries]);
+  }
+}
+
+function nameToSlug(name) {
+  return name.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove accents
+    .replace(/[^a-z0-9\s-]/g,'')
+    .trim().replace(/\s+/g,'-');
+}
+
+function addPlant() {
+  const inp = document.getElementById('plNewName');
+  const name = inp.value.trim(); if(!name) return;
+  const urlInp = document.getElementById('plNewUrl');
+  const gtUrl = urlInp ? urlInp.value.trim() : '';
+  const plants = loadPlants();
+  const plant = { id:'pl'+Date.now(), name, emoji:'🌿', gtUrl: gtUrl||'', cares:{}, createdAt:Date.now() };
+  plants.push(plant); savePlants(plants);
+  inp.value='';
+  if(urlInp) urlInp.value='';
+  plActivePlant = plant.id;
+  plActiveTab = 'water';
+  renderPlants();
+}
+
+function deletePlant(id) {
+  if(!confirm('Supprimer cette plante et tout son historique ?')) return;
+  const plants = loadPlants().filter(p=>p.id!==id);
+  savePlants(plants);
+  const entries = loadEntries().filter(e=>e.plantId!==id);
+  saveEntries(entries);
+  plActivePlant = plants.length ? (plants[0].id) : 'global';
+  renderPlants();
+}
+
+function saveCareFreq(plantId, careId, freq, startDate) {
+  const plants = loadPlants();
+  const p = plants.find(x=>x.id===plantId); if(!p) return;
+  if(!p.cares) p.cares={};
+  p.cares[careId] = { freq, startDate: startDate||todayK() };
+  savePlants(plants);
+  // generate entries now
+  ensurePlantEntries(p, careId);
+  renderPlants();
+}
+
+function addManualEntry(plantId, careId, date, note) {
+  if(!date) return;
+  const entries = loadEntries();
+  entries.push({ id:'pe'+Date.now(), plantId, careId, date, note:note||'', done:false, auto:false });
+  saveEntries(entries);
+  renderPlants();
+}
+
+function toggleEntry(id) {
+  const entries = loadEntries();
+  const e = entries.find(x=>x.id===id); if(!e) return;
+  e.done = !e.done;
+  saveEntries(entries);
+  renderPlants();
+}
+
+function deleteEntry(id) {
+  saveEntries(loadEntries().filter(e=>e.id!==id));
+  renderPlants();
+}
+
+function renderPlants() {
+  const plants = loadPlants();
+  if(plActivePlant===null) plActivePlant = plants.length ? 'global' : null;
+
+  // Ensure entries for all plants/cares
+  plants.forEach(p => CARE_TYPES.forEach(c => ensurePlantEntries(p, c.id)));
+
+  // Sidebar
+  const sidebar = document.getElementById('plPlantList');
+  sidebar.innerHTML =
+    `<button class="pl-plant-btn ${plActivePlant==='global'?'active':''}" onclick="setPlantView('global')"><span class="pl-plant-icon">🏠</span><span class="pl-plant-lbl">Vue globale</span></button>` +
+    plants.map(p=>`<button class="pl-plant-btn ${plActivePlant===p.id?'active':''}" onclick="setPlantView('${p.id}')"><span class="pl-plant-icon">${p.emoji||'🌿'}</span><span class="pl-plant-lbl">${esc(p.name)}</span></button>`).join('');
+
+  // Main content
+  const main = document.getElementById('plContent');
+  if(!plActivePlant || plActivePlant==='global') {
+    renderGlobalView(main, plants);
+  } else {
+    const plant = plants.find(p=>p.id===plActivePlant);
+    if(plant) renderPlantView(main, plant);
+    else { main.innerHTML=''; plActivePlant='global'; renderGlobalView(main, plants); }
+  }
+}
+
+function setPlantView(id) {
+  plActivePlant = id;
+  if(id!=='global') plActiveTab='water';
+  renderPlants();
+}
+
+function setPlantTab(tab) {
+  plActiveTab = tab;
+  renderPlants();
+}
+
+function renderGlobalView(container, plants) {
+  const today = todayK();
+  const in7 = offsetDayK(7);
+  const allEntries = loadEntries();
+  const season = currentSeason();
+
+  // Today/this week due
+  const due = allEntries.filter(e=>!e.done && e.date<=in7).sort((a,b)=>a.date.localeCompare(b.date));
+
+  let html = `<div class="pl-head">
+    <div>
+      <div class="pl-head-title">🏠 Vue globale <span class="pl-season-badge ${season.id}">${season.icon} ${season.label}</span></div>
+      <div class="pl-head-sub">${plants.length} plante${plants.length!==1?'s':''} · ${allEntries.filter(e=>!e.done&&e.date<=today).length} action${allEntries.filter(e=>!e.done&&e.date<=today).length!==1?'s':''} urgentes aujourd'hui</div>
+    </div>
+  </div>`;
+
+  if(!plants.length) {
+    html += `<div class="pl-content"><div class="pl-empty"><div class="pl-empty-txt">Ajoutez votre première plante dans la sidebar</div></div></div>`;
+    container.innerHTML = html; return;
+  }
+
+  html += `<div class="pl-content">`;
+
+  // Per-plant summary cards
+  html += `<div class="pl-section-title">À faire cette semaine</div>`;
+  if(!due.length) {
+    html += `<div class="pl-empty"><div class="pl-empty-txt">Rien à faire cette semaine 🎉</div></div>`;
+  } else {
+    html += `<div class="pl-global-grid">`;
+    plants.forEach(p => {
+      const pDue = due.filter(e=>e.plantId===p.id);
+      if(!pDue.length) return;
+      const overdue = pDue.filter(e=>e.date<today).length;
+      html += `<div class="pl-global-card">
+        <div class="pl-global-card-head">
+          <span>${p.emoji||'🌿'}</span>
+          <span class="pl-global-card-name">${esc(p.name)}</span>
+          ${overdue?`<span style="font-size:10px;font-weight:800;color:#dc2626;">${overdue} en retard</span>`:''}
+        </div>
+        <div class="pl-global-card-body">
+          ${pDue.map(e=>{
+            const ct = CARE_TYPES.find(c=>c.id===e.careId);
+            const isOd = e.date<today;
+            const isToday = e.date===today;
+            return `<div class="pl-global-item ${isOd?'hot':''}">
+              <span>${ct?.icon||''}</span>
+              <span class="pl-global-item-type">${ct?.label||e.careId}</span>
+              <span style="flex:1;font-size:12px;color:var(--ink-2);">${e.note||''}</span>
+              <span class="pl-global-item-date">${isOd?'En retard':isToday?"Aujourd'hui":fmt(e.date)}</span>
+              <button onclick="toggleEntry('${e.id}');event.stopPropagation()" style="border:none;background:var(--acc-bg);color:var(--acc);border-radius:3px;padding:2px 7px;font-size:10px;font-weight:800;cursor:pointer;">✓</button>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Seasonal tasks
+  html += `<div class="pl-seasonal-block">
+    <div class="pl-seasonal-head">
+      <div class="pl-section-title" style="margin:0">Tâches saisonnières — <span style="color:var(--acc)">${season.icon} ${season.label}</span></div>
+    </div>`;
+  const seasonalEntries = allEntries.filter(e=>e.seasonal===season.id && !e.done);
+  if(!seasonalEntries.length) {
+    html += `<div style="font-size:12px;color:var(--ink-3);padding:8px 0;">Aucune tâche saisonnière en cours. Ajoutez-en depuis la fiche d'une plante.</div>`;
+  } else {
+    seasonalEntries.forEach(e=>{
+      const p = plants.find(x=>x.id===e.plantId);
+      html += `<div class="pl-entry ${e.date<today?'overdue':''}">
+        <div class="pl-echk" onclick="toggleEntry('${e.id}')">${svgChk}</div>
+        <div class="pl-entry-body">
+          <div class="pl-entry-label">${esc(e.note||'Tâche saisonnière')} ${p?`<span style="font-size:11px;color:var(--ink-3);">· ${esc(p.name)}</span>`:''}
+          </div>
+          <div class="pl-entry-date">${fmt(e.date)}</div>
+        </div>
+        <button class="pl-entry-del" onclick="deleteEntry('${e.id}')">✕</button>
+      </div>`;
+    });
+  }
+  html += `</div></div>`;
+  container.innerHTML = html;
+}
+
+function renderPlantView(container, plant) {
+  const today = todayK();
+  const care = CARE_TYPES.find(c=>c.id===plActiveTab) || CARE_TYPES[0];
+  const allEntries = loadEntries();
+  const entries = allEntries
+    .filter(e=>e.plantId===plant.id && e.careId===plActiveTab)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  const careConf = (plant.cares||{})[plActiveTab]||{};
+  const season = currentSeason();
+
+  let html = `<div class="pl-head">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div class="pl-head-title">${plant.emoji||'🌿'} ${esc(plant.name)}</div>
+      <span class="pl-season-badge ${season.id}">${season.icon} ${season.label}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;">
+      ${plant.gtUrl
+        ? `<a class="pl-gt-link" href="${esc(plant.gtUrl)}" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a5 5 0 1 0 0 10A5 5 0 0 0 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="6" r="1.5" fill="currentColor"/></svg>
+            Fiche La Green Touch
+          </a>`
+        : `<button class="pl-gt-link" style="border:1px dashed #bbf7d0;background:transparent;cursor:pointer;" onclick="editPlantUrl('${plant.id}')">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Ajouter lien fiche
+          </button>`
+      }
+      <button class="pl-del-btn" onclick="deletePlant('${plant.id}')">Supprimer</button>
+    </div>
+    <div class="pl-head-sub" style="margin-top:5px;">${entries.filter(e=>e.done).length} entretien${entries.filter(e=>e.done).length!==1?'s':''} effectué${entries.filter(e=>e.done).length!==1?'s':''}</div>
+  </div>
+  <div class="pl-subtabs">
+    ${CARE_TYPES.map(c=>`<button class="pl-stab ${plActiveTab===c.id?'active':''}" onclick="setPlantTab('${c.id}')">${c.icon} ${c.label}</button>`).join('')}
+    <button class="pl-stab ${plActiveTab==='seasonal'?'active':''}" onclick="setPlantTab('seasonal')">🗓️ Saisonniers</button>
+  </div>`;
+
+  if(plActiveTab==='seasonal') {
+    // Seasonal tab
+    const sEntries = allEntries.filter(e=>e.plantId===plant.id && e.seasonal).sort((a,b)=>a.date.localeCompare(b.date));
+    html += `<div class="pl-content">
+      <div class="pl-care-header"><div class="pl-care-title">Tâches saisonnières</div></div>
+      <div class="pl-freq-form" style="flex-direction:column;align-items:flex-start;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label>Saison</label>
+          <select id="plSeasonSel">${SEASONS.map(s=>`<option value="${s.id}" ${s.id===season.id?'selected':''}>${s.icon} ${s.label}</option>`).join('')}</select>
+          <label>Date</label>
+          <input type="date" id="plSeasonDate" value="${today}" style="border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-size:12px;color:var(--ink-2);background:var(--paper);outline:none;">
+          <input type="text" id="plSeasonNote" placeholder="Description de la tâche…" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:4px;padding:4px 9px;font-size:12.5px;color:var(--ink);background:var(--paper);outline:none;font-family:var(--ff);" maxlength="80">
+          <button class="pl-freq-save" onclick="addSeasonalEntry('${plant.id}')">Ajouter</button>
+        </div>
+      </div>
+      <div class="pl-entries">`;
+    SEASONS.forEach(s=>{
+      const se = sEntries.filter(e=>e.seasonal===s.id);
+      if(!se.length) return;
+      html += `<div class="pl-section-title">${s.icon} ${s.label}</div>`;
+      se.forEach(e=>{
+        const isOd=e.date<today;
+        html += `<div class="pl-entry ${e.done?'done':''} ${isOd&&!e.done?'overdue':''}">
+          <div class="pl-echk" onclick="toggleEntry('${e.id}')">${svgChk}</div>
+          <div class="pl-entry-body">
+            <div class="pl-entry-label">${esc(e.note||'Tâche saisonnière')}</div>
+            <div class="pl-entry-date">${fmt(e.date)}</div>
+          </div>
+          ${isOd&&!e.done?`<span class="pl-entry-badge overdue">Retard</span>`:''}
+          <button class="pl-entry-del" onclick="deleteEntry('${e.id}')">✕</button>
+        </div>`;
+      });
+    });
+    if(!sEntries.length) html += `<div class="pl-empty"><div class="pl-empty-txt">Aucune tâche saisonnière</div></div>`;
+    html += `</div></div>`;
+    container.innerHTML = html; return;
+  }
+
+  // Regular care tab
+  html += `<div class="pl-content">
+    <div class="pl-care-header"><div class="pl-care-title">${care.icon} ${care.label}</div></div>
+    <div class="pl-freq-form">
+      <label>Fréquence</label>
+      <select id="plFreqSel" onchange="showFreqDays()">
+        <option value="">Manuel uniquement</option>
+        ${Object.entries(FREQ_LABELS).map(([v,l])=>`<option value="${v}" ${careConf.freq===v?'selected':''}>${l}</option>`).join('')}
+      </select>
+      <label style="margin-left:6px;">Depuis le</label>
+      <input type="date" id="plFreqStart" value="${careConf.startDate||today}" style="border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-size:12px;color:var(--ink-2);background:var(--paper);outline:none;">
+      <button class="pl-freq-save" onclick="saveCareFreq('${plant.id}','${plActiveTab}',document.getElementById('plFreqSel').value,document.getElementById('plFreqStart').value)">Enregistrer</button>
+      ${careConf.freq?`<span class="pl-freq-info">${FREQ_LABELS[careConf.freq]||''} depuis le ${fmt(careConf.startDate||today)}</span>`:''}
+    </div>
+    <div class="pl-add-entry">
+      <input type="date" id="plManualDate" value="${today}">
+      <input type="text" id="plManualNote" placeholder="Note optionnelle…" maxlength="60">
+      <button onclick="addManualEntry('${plant.id}','${plActiveTab}',document.getElementById('plManualDate').value,document.getElementById('plManualNote').value);document.getElementById('plManualNote').value=''">+ Ajouter</button>
+    </div>`;
+
+  const upcoming = entries.filter(e=>!e.done && e.date>=today).slice(0,10);
+  const past     = entries.filter(e=>e.done || e.date<today).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  const overdue  = entries.filter(e=>!e.done && e.date<today);
+
+  html += `<div class="pl-entries">`;
+  if(overdue.length) {
+    html += `<div class="pl-section-title" style="color:#dc2626;">⚠️ En retard (${overdue.length})</div>`;
+    overdue.forEach(e=>{
+      html += `<div class="pl-entry overdue ${e.done?'done':''}">
+        <div class="pl-echk" onclick="toggleEntry('${e.id}')">${svgChk}</div>
+        <div class="pl-entry-body">
+          <div class="pl-entry-label">${e.note||care.label}</div>
+          <div class="pl-entry-date">${fmt(e.date)}</div>
+        </div>
+        <span class="pl-entry-badge overdue">Retard</span>
+        <button class="pl-entry-del" onclick="deleteEntry('${e.id}')">✕</button>
+      </div>`;
+    });
+  }
+  if(upcoming.length) {
+    html += `<div class="pl-section-title">À venir</div>`;
+    upcoming.forEach(e=>{
+      const isToday = e.date===today;
+      html += `<div class="pl-entry upcoming ${e.done?'done':''}">
+        <div class="pl-echk" onclick="toggleEntry('${e.id}')">${svgChk}</div>
+        <div class="pl-entry-body">
+          <div class="pl-entry-label">${e.note||care.label}</div>
+          <div class="pl-entry-date">${isToday?"Aujourd'hui":fmt(e.date)}</div>
+        </div>
+        ${isToday?`<span class="pl-entry-badge">Aujourd'hui</span>`:''}
+        <button class="pl-entry-del" onclick="deleteEntry('${e.id}')">✕</button>
+      </div>`;
+    });
+  }
+  if(past.length) {
+    html += `<div class="pl-section-title">Historique</div>`;
+    past.forEach(e=>{
+      html += `<div class="pl-entry done">
+        <div class="pl-echk" onclick="toggleEntry('${e.id}')">${svgChk}</div>
+        <div class="pl-entry-body">
+          <div class="pl-entry-label">${e.note||care.label}</div>
+          <div class="pl-entry-date">${fmt(e.date)}</div>
+        </div>
+        <button class="pl-entry-del" onclick="deleteEntry('${e.id}')">✕</button>
+      </div>`;
+    });
+  }
+  if(!entries.length) html += `<div class="pl-empty"><div class="pl-empty-txt">Aucun entretien enregistré</div></div>`;
+  html += `</div></div>`;
+  container.innerHTML = html;
+}
+
+function editPlantUrl(plantId) {
+  const url = prompt('Coller le lien La Green Touch pour cette plante :');
+  if(url === null) return;
+  const plants = loadPlants();
+  const p = plants.find(x=>x.id===plantId); if(!p) return;
+  p.gtUrl = url.trim();
+  savePlants(plants);
+  renderPlants();
+}
+
+function addSeasonalEntry(plantId) {
+  const season = document.getElementById('plSeasonSel')?.value;
+  const date   = document.getElementById('plSeasonDate')?.value;
+  const note   = document.getElementById('plSeasonNote')?.value.trim();
+  if(!date || !season) return;
+  const entries = loadEntries();
+  entries.push({ id:'pe'+Date.now(), plantId, careId:'seasonal', seasonal:season, date, note:note||'', done:false, auto:false });
+  saveEntries(entries);
+  if(document.getElementById('plSeasonNote')) document.getElementById('plSeasonNote').value='';
+  renderPlants();
+}
+
+document.getElementById('plNewName')?.addEventListener('keydown', e=>{ if(e.key==='Enter') addPlant(); });
+
 </script>
 </body>
 </html>
