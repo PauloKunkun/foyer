@@ -440,6 +440,8 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
 .pl-add-plant input::placeholder { color:var(--ink-4); }
 .pl-add-plant button { border:none; background:var(--acc); color:#fff; border-radius:var(--r); width:28px; height:28px; cursor:pointer; font-size:17px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity .15s; }
 .pl-add-plant button:hover { opacity:.8; }
+.pl-mobile-add-btn { display:none; }
+.pl-mobile-form { display:none; }
 .pl-add-url { margin:5px 10px 0; }
 .pl-add-url input { width:100%; border:1px solid var(--line); border-radius:var(--r); padding:5px 9px; font-size:11.5px; color:var(--ink); background:var(--paper); outline:none; font-family:var(--ff); }
 .pl-add-url input:focus { border-color:var(--acc); }
@@ -530,6 +532,18 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
   .pl-plant-btn { flex:0 0 auto; white-space:nowrap; padding:7px 13px; border-radius:var(--r); }
   .pl-add-plant { display:none; }
   .pl-add-url { display:none; }
+  .pl-mobile-add-btn { display:flex; align-items:center; justify-content:center; flex:0 0 auto; width:34px; height:34px; border-radius:50%; border:none; background:var(--acc); color:#fff; font-size:20px; cursor:pointer; margin:0 8px; flex-shrink:0; box-shadow:0 2px 6px rgba(0,0,0,.15); transition:opacity .15s; }
+  .pl-mobile-add-btn:hover { opacity:.85; }
+  .pl-mobile-form { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--white); border-top:1px solid var(--line); padding:16px; z-index:200; box-shadow:0 -4px 20px rgba(0,0,0,.1); flex-direction:column; gap:10px; }
+  .pl-mobile-form.show { display:flex; }
+  .pl-mobile-form-title { font-size:13px; font-weight:800; color:var(--ink); }
+  .pl-mobile-form input { width:100%; border:1px solid var(--line); border-radius:var(--r); padding:10px 13px; font-size:14px; color:var(--ink); background:var(--paper); outline:none; font-family:var(--ff); }
+  .pl-mobile-form input:focus { border-color:var(--acc); }
+  .pl-mobile-form input::placeholder { color:var(--ink-4); }
+  .pl-mobile-form-btns { display:flex; gap:8px; }
+  .pl-mobile-form-btns button { flex:1; padding:11px; border:none; border-radius:var(--r); font-size:13px; font-weight:700; cursor:pointer; }
+  .pl-mobile-submit { background:var(--acc); color:#fff; }
+  .pl-mobile-cancel { background:var(--line-2); color:var(--ink-2); }
   .pl-head,.pl-content { padding-left:14px; padding-right:14px; }
   .pl-subtabs { padding:0 14px; }
   .pl-freq-form { gap:6px; }
@@ -716,6 +730,7 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
           <aside class="pl-sidebar" id="plSidebar">
             <div class="pl-sidebar-ttl">Mes plantes</div>
             <div id="plPlantList"></div>
+            <button class="pl-mobile-add-btn" onclick="togglePlantMobileForm()" title="Ajouter une plante">+</button>
             <div class="pl-add-plant" id="plAddZone">
               <input type="text" id="plNewName" placeholder="Nom de la plante…" maxlength="40">
               <button onclick="addPlant()">+</button>
@@ -724,6 +739,16 @@ body { font-family: var(--ff); font-size: 13.5px; line-height: 1.5; color: var(-
               <input type="url" id="plNewUrl" placeholder="Lien La Green Touch (optionnel)…">
             </div>
           </aside>
+          <!-- Mobile add plant form (bottom sheet) -->
+          <div class="pl-mobile-form" id="plMobileForm">
+            <div class="pl-mobile-form-title">Nouvelle plante</div>
+            <input type="text" id="plMobileName" placeholder="Nom de la plante…" maxlength="40">
+            <input type="url" id="plMobileUrl" placeholder="Lien La Green Touch (optionnel)…">
+            <div class="pl-mobile-form-btns">
+              <button class="pl-mobile-cancel" onclick="togglePlantMobileForm()">Annuler</button>
+              <button class="pl-mobile-submit" onclick="addPlantMobile()">Ajouter</button>
+            </div>
+          </div>
           <div class="pl-main" id="plMain">
             <div id="plContent"></div>
           </div>
@@ -1679,6 +1704,30 @@ function ensurePlantEntries(plant, careId) {
   }
 }
 
+function togglePlantMobileForm() {
+  const form = document.getElementById('plMobileForm');
+  const isShowing = form.classList.toggle('show');
+  if(isShowing) {
+    setTimeout(()=>document.getElementById('plMobileName').focus(), 100);
+  } else {
+    document.getElementById('plMobileName').value='';
+    document.getElementById('plMobileUrl').value='';
+  }
+}
+
+function addPlantMobile() {
+  const nameInp = document.getElementById('plMobileName');
+  const name = nameInp.value.trim(); if(!name) { nameInp.focus(); return; }
+  const gtUrl = document.getElementById('plMobileUrl').value.trim();
+  const plants = loadPlants();
+  const plant = { id:'pl'+Date.now(), name, emoji:'🌿', gtUrl: gtUrl||'', cares:{}, createdAt:Date.now() };
+  plants.push(plant); savePlants(plants);
+  togglePlantMobileForm();
+  plActivePlant = plant.id;
+  plActiveTab = 'water';
+  renderPlants();
+}
+
 function nameToSlug(name) {
   return name.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove accents
@@ -2030,6 +2079,7 @@ function addSeasonalEntry(plantId) {
 }
 
 document.getElementById('plNewName')?.addEventListener('keydown', e=>{ if(e.key==='Enter') addPlant(); });
+document.getElementById('plMobileName')?.addEventListener('keydown', e=>{ if(e.key==='Enter') addPlantMobile(); });
 
 </script>
 </body>
